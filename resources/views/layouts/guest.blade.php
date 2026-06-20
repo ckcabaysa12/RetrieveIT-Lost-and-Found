@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name') }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -16,6 +17,8 @@
         .btn-lf { background: var(--lf-teal); border: none; color: #fff; font-weight: 600; border-radius: 12px; }
         .btn-lf:hover { background: var(--lf-teal-dark); color: #fff; }
         .form-control { border-radius: 10px; }
+        .site-logo { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; line-height: 1; }
+        .site-logo__img { height: 80px; width: auto; display: block; max-width: 320px; object-fit: contain; }
     </style>
 </head>
 <body>
@@ -23,14 +26,22 @@
         <div class="row justify-content-center">
             <div class="col-md-6 col-lg-5">
                 <div class="text-center mb-4">
-                    <a href="{{ route('home') }}" class="text-decoration-none">
-                        <i class="bi bi-box-seam fs-2" style="color:var(--lf-teal)"></i>
-                        <h1 class="h4 auth-header mt-2 mb-0">{{ config('app.name') }}</h1>
-                        <p class="text-muted small mb-0">Web-Based Lost and Found Management System</p>
+                    <a href="{{ route('home') }}" class="text-decoration-none d-inline-block">
+                        @include('partials.logo', ['class' => 'site-logo--auth'])
+                        <p class="text-muted small mb-0 mt-2">Web-Based Lost and Found Management System</p>
                     </a>
                 </div>
                 <div class="card auth-card">
                     <div class="card-body p-4">
+                        @if ($errors->any())
+                            <div class="alert alert-danger py-2 small">
+                                <ul class="mb-0 ps-3">
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                         {{ $slot }}
                     </div>
                 </div>

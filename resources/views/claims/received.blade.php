@@ -2,6 +2,8 @@
 @section('title', 'Claims on My Found Items')
 
 @section('content')
+@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">Claims on My Found Items</h1>
     <p class="mb-0">Review claimant details before handing over any item.</p>

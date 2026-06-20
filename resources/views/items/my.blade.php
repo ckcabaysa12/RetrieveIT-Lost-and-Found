@@ -2,6 +2,8 @@
 @section('title', 'My Items')
 
 @section('content')
+@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
     <div>
         <p class="section-label mb-0">Your reports</p>

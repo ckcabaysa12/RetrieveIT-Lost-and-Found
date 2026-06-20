@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
                 'phone' => '09171234567',
                 'password' => Hash::make('password'),
                 'role' => 'user',
-                'verification_status' => 'pending',
-                'is_verified' => false,
+                'verification_status' => 'verified',
+                'is_verified' => true,
                 'email_verified_at' => now(),
             ]
         );

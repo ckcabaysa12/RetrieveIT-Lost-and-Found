@@ -20,6 +20,7 @@ class User extends Authenticatable
         'password',
         'role',
         'id_image',
+        'profile_image',
         'verification_status',
         'is_verified',
     ];

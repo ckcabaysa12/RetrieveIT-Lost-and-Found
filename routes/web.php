@@ -5,7 +5,6 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\ClaimReviewController;
 use App\Http\Controllers\Admin\ItemReviewController;
 use App\Http\Controllers\Admin\ReportController;
-use App\Http\Controllers\Admin\UserVerificationController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
@@ -43,9 +42,6 @@ Route::middleware('auth')->group(function () {
 
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
         Route::get('/', AdminDashboardController::class)->name('dashboard');
-        Route::get('users', [UserVerificationController::class, 'index'])->name('users.index');
-        Route::post('users/{user}/verify', [UserVerificationController::class, 'verify'])->name('users.verify');
-        Route::post('users/{user}/reject', [UserVerificationController::class, 'reject'])->name('users.reject');
         Route::get('items', [ItemReviewController::class, 'index'])->name('items.index');
         Route::patch('items/{item}/status', [ItemReviewController::class, 'updateStatus'])->name('items.status');
         Route::get('claims', [ClaimReviewController::class, 'index'])->name('claims.index');

@@ -2,6 +2,8 @@
 @section('title', 'Browse Items')
 
 @section('content')
+@include('partials.back-button', ['url' => route('home'), 'label' => 'Back to home'])
+
 <div class="page-hero mb-4">
     <h1 class="h3 mb-2">Browse Listings</h1>
     <p>
@@ -42,6 +44,9 @@
 
 <div class="row g-3">
     @forelse($items as $item)
+        @php
+            $activeClaims = $item->claims->whereIn('status', ['pending', 'approved'])->count();
+        @endphp
         <div class="col-md-6 col-lg-4">
             <div class="card-lf item-card h-100 d-flex flex-column">
                 <div class="card-img-wrap">
@@ -55,11 +60,20 @@
                     <div class="mb-2">
                         <span class="{{ $item->type === 'found' ? 'badge-found' : 'badge-lost' }}">{{ ucfirst($item->type) }}</span>
                         <span class="badge bg-light text-muted">{{ $item->category->name }}</span>
+                        @if($activeClaims > 0)
+                            <span class="badge bg-info-subtle text-info-emphasis">{{ $activeClaims }} claim{{ $activeClaims > 1 ? 's' : '' }}</span>
+                        @endif
+                        @if($item->status === 'pending_claim')
+                            <span class="badge bg-warning-subtle text-warning-emphasis">Claim in progress</span>
+                        @endif
                     </div>
                     <h5 class="fw-bold mb-1">{{ $item->title }}</h5>
                     <p class="small text-muted mb-2">{{ \Illuminate\Support\Str::limit($item->description, 70) }}</p>
                     <p class="small mb-1"><i class="bi bi-geo-alt text-muted"></i> {{ $item->location }}</p>
-                    <p class="small mb-3">{{ $item->user->name }} @include('partials.verified-badge', ['user' => $item->user])</p>
+                    <p class="small mb-3 d-inline-flex align-items-center gap-1">
+                        {{ $item->user->name }}
+                        @include('partials.verified-badge', ['user' => $item->user, 'verifiedOnly' => true])
+                    </p>
                     <div class="mt-auto">
                         @include('partials.item-action-buttons', ['item' => $item])
                     </div>

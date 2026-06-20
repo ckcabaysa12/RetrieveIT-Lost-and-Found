@@ -71,7 +71,7 @@ class ClaimController extends Controller
         }
 
         $data = $request->validate([
-            'claim_message' => ['required', 'string', 'min:20'],
+            'claim_message' => ['required', 'string'],
         ]);
 
         Claim::create([
@@ -149,6 +149,8 @@ class ClaimController extends Controller
             'status' => 'awaiting_finder',
             'finder_confirmed_at' => null,
             'reschedule_note' => null,
+            'reschedule_date' => null,
+            'reschedule_time' => null,
             'reschedule_requested_by' => null,
         ]);
 
@@ -181,16 +183,25 @@ class ClaimController extends Controller
 
         $data = $request->validate([
             'reschedule_note' => ['required', 'string', 'min:10', 'max:500'],
+            'reschedule_date' => [$isFinder ? 'required' : 'nullable', 'date', 'after_or_equal:today'],
+            'reschedule_time' => [$isFinder ? 'required' : 'nullable', 'string', 'max:10'],
+        ], [
+            'reschedule_date.required' => 'Please select the date you are available.',
+            'reschedule_time.required' => 'Please select the time you are available.',
         ]);
 
         $claim->pickup->update([
             'status' => 'reschedule_requested',
             'reschedule_note' => $data['reschedule_note'],
+            'reschedule_date' => $data['reschedule_date'] ?? null,
+            'reschedule_time' => $data['reschedule_time'] ?? null,
             'reschedule_requested_by' => $isClaimer ? 'owner' : 'finder',
             'finder_confirmed_at' => null,
         ]);
 
-        return back()->with('success', 'Reschedule request sent. The owner will propose a new date and time.');
+        return back()->with('success', $isFinder
+            ? 'Reschedule request sent with your availability. The owner will propose a new schedule.'
+            : 'Reschedule request sent. The owner will propose a new date and time.');
     }
 
     public function confirmReceipt(Claim $claim): RedirectResponse

@@ -2,6 +2,8 @@
 @section('title', 'Categories')
 
 @section('content')
+@include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
+
 <div class="mb-4">
     <p class="section-label mb-0">Item organization</p>
     <h1 class="h4 fw-bold">Manage Categories</h1>

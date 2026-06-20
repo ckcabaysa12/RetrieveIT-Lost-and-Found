@@ -9,7 +9,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -29,8 +28,11 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'phone' => ['required', 'string', 'max:20'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
             'id_image' => ['required', 'image', 'max:4096'],
+        ], [
+            'password.confirmed' => 'Passwords do not match.',
+            'password.min' => 'Password must be at least 8 characters.',
         ]);
 
         $user = User::create([
@@ -40,8 +42,8 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'id_image' => $request->file('id_image')->store('id_cards', 'public'),
             'role' => 'user',
-            'verification_status' => 'pending',
-            'is_verified' => false,
+            'verification_status' => 'verified',
+            'is_verified' => true,
         ]);
 
         event(new Registered($user));
@@ -49,6 +51,6 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false))
-            ->with('success', 'Account created! Your ID is pending admin verification.');
+            ->with('success', 'Account created! You can now browse and report items.');
     }
 }

@@ -20,24 +20,32 @@ class ProfileController extends Controller
     {
         $user = $request->user();
 
-        $data = $request->validate([
+        $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'max:20'],
+            'profile_image' => ['nullable', 'image', 'max:4096'],
             'id_image' => ['nullable', 'image', 'max:4096'],
         ]);
+
+        $data = $request->only(['name', 'phone']);
+
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+            $data['profile_image'] = $request->file('profile_image')->store('profiles', 'public');
+        }
 
         if ($request->hasFile('id_image')) {
             if ($user->id_image) {
                 Storage::disk('public')->delete($user->id_image);
             }
             $data['id_image'] = $request->file('id_image')->store('id_cards', 'public');
-            $data['verification_status'] = 'pending';
-            $data['is_verified'] = false;
         }
 
         $user->update($data);
 
-        return Redirect::route('profile.show')->with('success', 'Profile updated. ID sent for re-verification.');
+        return Redirect::route('profile.show')->with('success', 'Profile updated successfully.');
     }
 
     public function destroy(Request $request): RedirectResponse

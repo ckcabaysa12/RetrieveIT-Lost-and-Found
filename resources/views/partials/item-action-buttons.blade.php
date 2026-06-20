@@ -1,12 +1,13 @@
 @php
     $isOwner = auth()->check() && $item->user_id === auth()->id();
+    $isAvailable = $item->status === 'available';
     $canClaimItem = auth()->check()
         && $item->type === 'found'
-        && $item->status === 'available'
+        && $isAvailable
         && ! $isOwner;
     $canFoundItem = auth()->check()
         && $item->type === 'lost'
-        && $item->status === 'available'
+        && $isAvailable
         && ! $isOwner;
 @endphp
 
@@ -14,9 +15,9 @@
     <a href="{{ route('items.show', $item) }}" class="btn btn-lf-outline btn-sm">View details</a>
 
     @guest
-        @if($item->type === 'found' && $item->status === 'available')
+        @if($item->type === 'found' && $isAvailable)
             <a href="{{ route('login') }}" class="btn btn-amber btn-sm"><i class="bi bi-hand-index me-1"></i> Log in to claim</a>
-        @elseif($item->type === 'lost' && $item->status === 'available')
+        @elseif($item->type === 'lost' && $isAvailable)
             <a href="{{ route('login') }}" class="btn btn-lf btn-sm"><i class="bi bi-check-circle me-1"></i> Log in — I found this</a>
         @endif
     @else
@@ -30,6 +31,8 @@
             </a>
         @elseif($isOwner)
             <span class="btn btn-light btn-sm disabled">Your listing</span>
+        @elseif($item->status === 'pending_claim')
+            <span class="btn btn-light btn-sm disabled">Claim in progress</span>
         @elseif($item->status !== 'available')
             <span class="btn btn-light btn-sm disabled">No longer available</span>
         @endif

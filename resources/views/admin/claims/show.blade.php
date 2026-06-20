@@ -2,6 +2,8 @@
 @section('title', 'Review Claim')
 
 @section('content')
+@include('partials.back-button', ['url' => route('admin.claims.index'), 'label' => 'Back to claims'])
+
 <p class="section-label">Final ownership confirmation</p>
 <h1 class="h4 fw-bold mb-4">Admin: Confirm ownership</h1>
 

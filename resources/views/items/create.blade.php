@@ -2,6 +2,8 @@
 @section('title', 'Report Item')
 
 @section('content')
+@include('partials.back-button', ['url' => route('items.index'), 'label' => 'Back to listings'])
+
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">Report an Item</h1>
     <p class="small mb-0">Lost something? Found something? Let the campus community help.</p>
@@ -59,6 +61,7 @@
                     <div class="col-12">
                         <label class="form-label fw-medium">Photo <span class="text-muted fw-normal">(optional)</span></label>
                         <input type="file" name="image" class="form-control" accept="image/*">
+                        <x-input-error :messages="$errors->get('image')" />
                     </div>
                     <div class="col-12">
                         <button class="btn btn-lf">Submit Report</button>

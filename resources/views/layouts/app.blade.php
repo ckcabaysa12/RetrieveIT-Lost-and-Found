@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset('images/logo.svg') }}">
     <title>@yield('title', 'Home') — {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,8 +28,17 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--lf-bg); color: var(--lf-text); min-height: 100vh; display: flex; flex-direction: column; }
         main { flex: 1; }
 
-        .navbar-lf { background: var(--lf-card) !important; border-bottom: 1px solid rgba(45,106,106,.08); box-shadow: var(--lf-shadow); padding: .65rem 0; }
-        .navbar-brand { color: var(--lf-teal) !important; font-weight: 700; font-size: 1.15rem; }
+        .navbar-lf { background: var(--lf-card) !important; border-bottom: 1px solid rgba(45,106,106,.08); box-shadow: var(--lf-shadow); padding: .5rem 0; }
+        .navbar-lf .container { align-items: center; }
+        .navbar-brand { color: var(--lf-teal) !important; font-weight: 700; font-size: 1.15rem; padding: 0; margin-right: .75rem; flex-shrink: 0; }
+        .navbar-lf .navbar-brand .site-logo__img { height: 40px; max-width: 165px; }
+        .site-logo { display: inline-flex; align-items: center; text-decoration: none; line-height: 1; }
+        .site-logo__img { height: 64px; width: auto; display: block; max-width: 260px; object-fit: contain; }
+        .site-logo--auth .site-logo__img { height: 80px; max-width: 320px; }
+        .site-logo--hero .site-logo__img { height: 160px; max-width: 420px; opacity: 1; }
+        .navbar-lf .navbar-nav .nav-link { padding: .4rem .65rem !important; white-space: nowrap; }
+        .navbar-lf .navbar-collapse { justify-content: flex-start; gap: .5rem; }
+        .navbar-lf .navbar-nav.ms-lg-auto { margin-left: auto !important; flex-shrink: 0; }
         .nav-link { color: var(--lf-muted) !important; font-weight: 500; font-size: .925rem; border-radius: 10px; padding: .45rem .9rem !important; transition: all .2s; }
         .nav-link:hover, .nav-link.active { color: var(--lf-teal) !important; background: var(--lf-teal-soft); }
 
@@ -59,12 +69,7 @@
         .badge-found { background: #ecfdf5; color: #059669; font-weight: 600; border-radius: 20px; padding: .35em .75em; }
         .badge-status { font-weight: 600; border-radius: 20px; padding: .35em .75em; font-size: .75rem; }
 
-        .verified-badge {
-            display: inline-flex; align-items: center; gap: .3rem;
-            background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1d4ed8;
-            font-size: .72rem; font-weight: 700; padding: .25rem .6rem; border-radius: 20px;
-        }
-        .verified-badge i { font-size: .85rem; }
+        .verified-check { font-size: 1rem; vertical-align: middle; line-height: 1; }
 
         .flow-step { position: relative; padding: .75rem 0 .75rem 2rem; border-left: 2px dashed rgba(45,106,106,.25); margin-left: .6rem; }
         .flow-step::before {

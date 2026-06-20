@@ -3,22 +3,12 @@
 
 @section('content')
 <div class="page-hero mb-4">
-    <h1 class="h3 mb-1">Hey, {{ auth()->user()->name }}!</h1>
-    <p>Welcome to RetrieveIT. @include('partials.verified-badge', ['user' => auth()->user()])</p>
+    <h1 class="h3 mb-1 d-inline-flex align-items-center gap-2 flex-wrap">
+        Hey, {{ auth()->user()->name }}!
+        @include('partials.verified-badge', ['user' => auth()->user(), 'verifiedOnly' => true])
+    </h1>
+    <p class="mb-0">Welcome to RetrieveIT.</p>
 </div>
-
-@if(!auth()->user()->is_verified)
-    <div class="card-lf p-3 mb-4 border-warning" style="border-left: 4px solid var(--lf-amber) !important;">
-        <div class="d-flex gap-3 align-items-start">
-            <i class="bi bi-info-circle fs-4 text-warning"></i>
-            <div>
-                <strong>Get verified for more trust</strong>
-                <p class="small text-muted mb-2">Upload a clear valid ID and wait for admin approval to receive your blue check badge.</p>
-                <a href="{{ route('profile.show') }}" class="btn btn-lf btn-sm">Go to Profile</a>
-            </div>
-        </div>
-    </div>
-@endif
 
 <div class="row g-3 mb-4">
     <div class="col-md-4"><div class="stat-pill"><div class="num">{{ $stats['items'] }}</div><div class="lbl">My Items</div></div></div>
@@ -31,6 +21,7 @@
     <a href="{{ route('items.index') }}" class="btn btn-lf-outline"><i class="bi bi-search me-1"></i> Browse</a>
     <a href="{{ route('claims.index') }}" class="btn btn-lf-outline"><i class="bi bi-inbox me-1"></i> My Claims</a>
     <a href="{{ route('items.mine') }}" class="btn btn-lf-outline"><i class="bi bi-collection me-1"></i> My Items</a>
+    <a href="{{ route('profile.show') }}" class="btn btn-lf-outline"><i class="bi bi-person me-1"></i> Profile</a>
 </div>
 
 <div class="row g-4">

@@ -2,6 +2,8 @@
 @section('title', 'Reports')
 
 @section('content')
+@include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
+
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">System Reports</h1>
     <p class="mb-0">Monitor activity for your capstone documentation & defense.</p>

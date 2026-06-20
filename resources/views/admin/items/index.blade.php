@@ -2,6 +2,8 @@
 @section('title', 'Manage Items')
 
 @section('content')
+@include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
+
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <p class="section-label mb-0">Lost & found reports</p>

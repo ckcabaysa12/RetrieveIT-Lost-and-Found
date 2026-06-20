@@ -2,6 +2,8 @@
 @section('title', 'My Claims')
 
 @section('content')
+@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">My Claims</h1>
     <p class="mb-0">Track status, claim codes, and pickup instructions.</p>
@@ -26,9 +28,17 @@
                         <td><code>{{ $claim->claim_code ?? '—' }}</code></td>
                         <td class="small">
                             @if($claim->pickup)
-                                {{ $claim->pickup->location }}<br>
-                                <span class="text-muted">{{ $claim->pickup->date->format('M d') }} · {{ $claim->pickup->time }}</span>
-                            @else — @endif
+                                @if($claim->pickup->location)
+                                    {{ $claim->pickup->location }}<br>
+                                @endif
+                                @if($claim->pickup->date)
+                                    <span class="text-muted">{{ $claim->pickup->date->format('M d') }} · {{ $claim->pickup->time }}</span>
+                                @else
+                                    <span class="text-muted">{{ $claim->pickup->statusLabel() }}</span>
+                                @endif
+                            @else
+                                —
+                            @endif
                         </td>
                         <td><a href="{{ route('claims.show', $claim) }}" class="btn btn-lf-outline btn-sm">Details</a></td>
                     </tr>

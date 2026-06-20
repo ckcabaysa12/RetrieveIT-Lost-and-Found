@@ -15,6 +15,8 @@ class Pickup extends Model
         'status',
         'finder_confirmed_at',
         'reschedule_note',
+        'reschedule_date',
+        'reschedule_time',
         'reschedule_requested_by',
     ];
 
@@ -22,6 +24,7 @@ class Pickup extends Model
     {
         return [
             'date' => 'date',
+            'reschedule_date' => 'date',
             'finder_confirmed_at' => 'datetime',
         ];
     }

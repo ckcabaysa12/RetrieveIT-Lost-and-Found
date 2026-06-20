@@ -2,6 +2,8 @@
 @section('title', 'Claim Details')
 
 @section('content')
+@include('partials.back-button', ['url' => $isClaimer ? route('claims.index') : route('claims.received'), 'label' => 'Back'])
+
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card-lf p-4 mb-3">
@@ -77,6 +79,12 @@
                 <div class="alert alert-warning mt-3 mb-0 small">
                     <strong>Reschedule requested</strong> by {{ $claim->pickup->reschedule_requested_by === 'owner' ? 'owner' : 'finder' }}:<br>
                     {{ $claim->pickup->reschedule_note }}
+                    @if($claim->pickup->reschedule_date && $claim->pickup->reschedule_time)
+                        <hr class="my-2">
+                        <strong>Available on:</strong>
+                        {{ $claim->pickup->reschedule_date->format('l, M d, Y') }}
+                        at {{ \Illuminate\Support\Carbon::parse($claim->pickup->reschedule_time)->format('g:i A') }}
+                    @endif
                 </div>
             @endif
         </div>
@@ -105,6 +113,14 @@
         @if($isClaimer && $claim->status === 'approved' && $claim->pickup?->isAwaitingOwnerSchedule())
             <div class="card-lf p-4 mb-3">
                 <h5 class="fw-bold mb-2"><i class="bi bi-calendar-plus me-1"></i> Propose pickup schedule</h5>
+                @if($claim->pickup->status === 'reschedule_requested' && $claim->pickup->reschedule_requested_by === 'finder' && $claim->pickup->reschedule_date && $claim->pickup->reschedule_time)
+                    <div class="alert alert-info small py-2">
+                        <i class="bi bi-clock me-1"></i>
+                        <strong>Finder availability:</strong>
+                        {{ $claim->pickup->reschedule_date->format('l, M d, Y') }}
+                        at {{ \Illuminate\Support\Carbon::parse($claim->pickup->reschedule_time)->format('g:i A') }}
+                    </div>
+                @endif
                 <p class="small text-muted mb-3">You (the owner) choose a safe location, date, and time. The finder must confirm before pickup.</p>
                 @include('partials.safe-pickup')
                 <form method="POST" action="{{ route('claims.schedule', $claim) }}" class="mt-3">
@@ -120,11 +136,11 @@
                     <div class="row g-2 mb-3">
                         <div class="col-6">
                             <label class="form-label fw-medium">Date</label>
-                            <input type="date" name="date" class="form-control" value="{{ old('date', $claim->pickup->date?->format('Y-m-d')) }}" required>
+                            <input type="date" name="date" class="form-control" value="{{ old('date', $claim->pickup->reschedule_date?->format('Y-m-d') ?? $claim->pickup->date?->format('Y-m-d')) }}" required>
                         </div>
                         <div class="col-6">
                             <label class="form-label fw-medium">Time</label>
-                            <input type="time" name="time" class="form-control" value="{{ old('time', $claim->pickup->time) }}" required>
+                            <input type="time" name="time" class="form-control" value="{{ old('time', $claim->pickup->reschedule_time ?? $claim->pickup->time) }}" required>
                         </div>
                     </div>
                     <button class="btn btn-lf w-100">Send schedule to finder</button>
@@ -149,10 +165,33 @@
             @if($isClaimer || $isFinder)
                 <div class="card-lf p-4 mb-3">
                     <h5 class="fw-bold h6 mb-2"><i class="bi bi-arrow-repeat me-1"></i> Request reschedule</h5>
-                    <p class="small text-muted mb-2">Use if you or the other person cannot make the scheduled time (emergency, class, etc.). The owner will propose a new schedule.</p>
+                    <p class="small text-muted mb-2">
+                        @if($isFinder)
+                            Use if you cannot make the scheduled time. Tell the owner when you are available.
+                        @else
+                            Use if you or the other person cannot make the scheduled time (emergency, class, etc.). The owner will propose a new schedule.
+                        @endif
+                    </p>
                     <form method="POST" action="{{ route('claims.reschedule', $claim) }}">
                         @csrf
-                        <textarea name="reschedule_note" class="form-control mb-2" rows="2" required minlength="10" placeholder="Brief reason and when you are available..."></textarea>
+                        <label class="form-label small fw-medium">Reason</label>
+                        <textarea name="reschedule_note" class="form-control mb-3" rows="2" required minlength="10" placeholder="Brief reason...">{{ old('reschedule_note') }}</textarea>
+                        <x-input-error :messages="$errors->get('reschedule_note')" />
+                        @if($isFinder)
+                            <label class="form-label small fw-medium">When are you available?</label>
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Date</label>
+                                    <input type="date" name="reschedule_date" class="form-control" value="{{ old('reschedule_date') }}" required>
+                                    <x-input-error :messages="$errors->get('reschedule_date')" />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label small text-muted">Time</label>
+                                    <input type="time" name="reschedule_time" class="form-control" value="{{ old('reschedule_time') }}" required>
+                                    <x-input-error :messages="$errors->get('reschedule_time')" />
+                                </div>
+                            </div>
+                        @endif
                         <button class="btn btn-outline-secondary btn-sm w-100">Request reschedule</button>
                     </form>
                 </div>
@@ -179,8 +218,6 @@
                 Owner confirmed receipt on {{ $claim->owner_confirmed_at->format('M d, Y g:i A') }}. Case closed.
             </div>
         @endif
-
-        <a href="{{ $isClaimer ? route('claims.index') : route('claims.received') }}" class="btn btn-lf-outline">← Back</a>
     </div>
 </div>
 @endsection

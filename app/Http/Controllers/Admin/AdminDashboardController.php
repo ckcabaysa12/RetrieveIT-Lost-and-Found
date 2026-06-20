@@ -15,13 +15,11 @@ class AdminDashboardController extends Controller
         return view('admin.dashboard', [
             'stats' => [
                 'users' => User::where('role', 'user')->count(),
-                'pending_verifications' => User::where('role', 'user')->where('verification_status', 'pending')->count(),
                 'items' => Item::count(),
                 'available_items' => Item::where('status', 'available')->count(),
                 'pending_claims' => Claim::where('status', 'pending')->count(),
             ],
             'recentClaims' => Claim::with(['user', 'item'])->latest()->limit(5)->get(),
-            'pendingUsers' => User::where('verification_status', 'pending')->latest()->limit(5)->get(),
         ]);
     }
 }

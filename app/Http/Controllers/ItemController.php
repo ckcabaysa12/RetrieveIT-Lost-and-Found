@@ -4,19 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Item;
-use App\Services\ItemMatchingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ItemController extends Controller
 {
-    public function __construct(private ItemMatchingService $matching) {}
-
     public function index(Request $request): View
     {
-        $query = Item::with(['user', 'category'])
-            ->browsable()
+        $query = Item::with(['user', 'category', 'claims'])
+            ->whereIn('status', ['available', 'pending_claim'])
             ->latest();
 
         if ($request->filled('type')) {
@@ -94,9 +91,8 @@ class ItemController extends Controller
 
     public function show(Item $item): View
     {
-        $item->load(['user', 'category']);
+        $item->load(['user', 'category', 'claims']);
 
-        $matches = $this->matching->findMatches($item);
         $canClaim = auth()->check()
             && $item->type === 'found'
             && $item->isBrowsable()
@@ -107,6 +103,6 @@ class ItemController extends Controller
             && $item->isBrowsable()
             && $item->user_id !== auth()->id();
 
-        return view('items.show', compact('item', 'matches', 'canClaim', 'canReportFound'));
+        return view('items.show', compact('item', 'canClaim', 'canReportFound'));
     }
 }

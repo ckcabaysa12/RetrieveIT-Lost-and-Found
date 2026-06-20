@@ -2,6 +2,8 @@
 @section('title', $item->title)
 
 @section('content')
+@include('partials.back-button', ['url' => route('items.index'), 'label' => 'Back to listings'])
+
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card-lf mb-4">
@@ -13,6 +15,10 @@
                     <span class="{{ $item->type === 'found' ? 'badge-found' : 'badge-lost' }}">{{ ucfirst($item->type) }}</span>
                     <span class="badge bg-light text-muted">{{ $item->category->name }}</span>
                     <span class="badge-status bg-secondary-subtle text-secondary">{{ str_replace('_', ' ', $item->status) }}</span>
+                    @php $activeClaims = $item->claims->whereIn('status', ['pending', 'approved']); @endphp
+                    @if($activeClaims->isNotEmpty())
+                        <span class="badge bg-info-subtle text-info-emphasis">{{ $activeClaims->count() }} active claim{{ $activeClaims->count() > 1 ? 's' : '' }}</span>
+                    @endif
                 </div>
                 <h1 class="h3 fw-bold">{{ $item->title }}</h1>
                 <p class="text-muted">{{ $item->description }}</p>
@@ -21,38 +27,12 @@
                     <div class="col-sm-6"><i class="bi bi-calendar me-1"></i> {{ $item->date_reported->format('M d, Y') }}</div>
                 </div>
                 <hr>
-                <p class="mb-0 small">
+                <p class="mb-0 small d-inline-flex align-items-center gap-1">
                     Posted by <strong>{{ $item->user->name }}</strong>
-                    @include('partials.verified-badge', ['user' => $item->user])
+                    @include('partials.verified-badge', ['user' => $item->user, 'verifiedOnly' => true])
                 </p>
             </div>
         </div>
-
-        @if($matches->isNotEmpty())
-            <div class="card-lf">
-                <div class="card-header"><i class="bi bi-lightning me-1"></i> Smart Matches</div>
-                <ul class="list-group list-group-flush">
-                    @foreach($matches as $match)
-                        <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap gap-2">
-                            <div>
-                                <span class="small fw-medium">{{ $match->title }}</span>
-                                <span class="text-muted small d-block">{{ $match->location }}</span>
-                            </div>
-                            <div class="d-flex gap-1">
-                                <a href="{{ route('items.show', $match) }}" class="btn btn-lf-outline btn-sm">View</a>
-                                @auth
-                                    @if($match->type === 'found' && $match->status === 'available' && $match->user_id !== auth()->id())
-                                        <a href="{{ route('items.show', $match) }}#claim" class="btn btn-amber btn-sm">Claim</a>
-                                    @elseif($match->type === 'lost' && $match->status === 'available' && $match->user_id !== auth()->id())
-                                        <a href="{{ route('items.create', ['from_lost' => $match->id]) }}" class="btn btn-lf btn-sm">I found this</a>
-                                    @endif
-                                @endauth
-                            </div>
-                        </li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
     </div>
 
     <div class="col-lg-4">
@@ -66,7 +46,8 @@
                         <form method="POST" action="{{ route('claims.store', $item) }}" class="mt-3">
                             @csrf
                             <label class="form-label small fw-medium">Why is this yours?</label>
-                            <textarea name="claim_message" class="form-control mb-3" rows="4" required minlength="20" placeholder="Describe unique marks, contents, color, etc."></textarea>
+                            <textarea name="claim_message" class="form-control mb-3" rows="4" required placeholder="Describe unique marks, contents, color, etc."></textarea>
+                            <x-input-error :messages="$errors->get('claim_message')" />
                             <button class="btn btn-amber w-100 fw-semibold"><i class="bi bi-send me-1"></i> Submit claim</button>
                         </form>
                     </div>
@@ -88,7 +69,7 @@
                     <p class="fw-medium mb-1"><i class="bi bi-person-check me-1"></i> This is your listing</p>
                     <p class="text-muted small mb-0">
                         @if($item->type === 'lost')
-                            Wait for someone to click <strong>I found this item</strong>, or check smart matches below.
+                            Wait for someone to click <strong>I found this item</strong>.
                         @else
                             Wait for an owner to submit a claim.
                         @endif
@@ -103,6 +84,9 @@
                 <div class="card-lf p-4">
                     <p class="fw-medium mb-1"><i class="bi bi-lock me-1"></i> Not available</p>
                     <p class="text-muted small mb-0">Status: <strong>{{ str_replace('_', ' ', $item->status) }}</strong>.</p>
+                    @if($activeClaims->isNotEmpty())
+                        <p class="text-muted small mb-0 mt-2">This item has {{ $activeClaims->count() }} active claim(s).</p>
+                    @endif
                 </div>
             @endif
         @else

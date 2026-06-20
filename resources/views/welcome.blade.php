@@ -23,7 +23,7 @@
             </div>
         </div>
         <div class="col-lg-4 d-none d-lg-block text-center position-relative" style="z-index:1">
-            <i class="bi bi-box-seam" style="font-size:7rem;opacity:.25"></i>
+            @include('partials.logo', ['class' => 'site-logo--hero'])
         </div>
     </div>
 </section>
@@ -33,14 +33,14 @@
         <div class="feature-tile">
             <div class="icon-wrap"><i class="bi bi-patch-check-fill"></i></div>
             <h5 class="fw-bold">Verified Users</h5>
-            <p class="text-muted small mb-0">Upload your ID, get admin-approved, and earn the blue check badge for trusted claiming.</p>
+            <p class="text-muted small mb-0">Upload your valid ID and earn the blue check badge for trusted claiming.</p>
         </div>
     </div>
     <div class="col-md-4">
         <div class="feature-tile">
             <div class="icon-wrap"><i class="bi bi-search"></i></div>
             <h5 class="fw-bold">Lost & Found Listings</h5>
-            <p class="text-muted small mb-0">Report lost or found items, browse with filters, and get smart match suggestions.</p>
+            <p class="text-muted small mb-0">Report lost or found items and browse listings with filters.</p>
         </div>
     </div>
     <div class="col-md-4">
@@ -82,31 +82,7 @@
 </div>
 
 <div class="row g-4 mb-4">
-    <div class="col-lg-6">
-        <div class="card-lf p-4">
-            <p class="section-label">Admin panel</p>
-            <h3 class="h5 fw-bold mb-3">Campus staff controls</h3>
-            <ul class="list-unstyled mb-0">
-                @foreach([
-                    'Manage user verification (ID → blue check)',
-                    'Review lost & found reports',
-                    'Approve / reject claims',
-                    'Verify item ownership from evidence',
-                    'Manage item categories',
-                    'Monitor system activity',
-                    'Generate reports',
-                ] as $item)
-                    <li class="mb-2 small"><i class="bi bi-check2 text-success me-2"></i>{{ $item }}</li>
-                @endforeach
-            </ul>
-            @auth
-                @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.dashboard') }}" class="btn btn-lf btn-sm mt-3">Open Admin Panel</a>
-                @endif
-            @endauth
-        </div>
-    </div>
-    <div class="col-lg-6">
+    <div class="col-lg-12">
         @include('partials.safe-pickup')
     </div>
 </div>

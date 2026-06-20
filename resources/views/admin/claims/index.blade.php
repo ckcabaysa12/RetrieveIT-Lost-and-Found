@@ -2,6 +2,8 @@
 @section('title', 'Manage Claims')
 
 @section('content')
+@include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <p class="section-label mb-0">Trust-based claiming</p>
