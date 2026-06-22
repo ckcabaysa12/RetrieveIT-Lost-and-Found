@@ -53,6 +53,8 @@ Route::middleware('auth')->group(function () {
         Route::put('categories/{category}', [AdminCategoryController::class, 'update'])->name('categories.update');
         Route::delete('categories/{category}', [AdminCategoryController::class, 'destroy'])->name('categories.destroy');
         Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+        Route::get('reports/xml', [ReportController::class, 'xml'])->name('reports.xml');
+        Route::get('reports/transform', [ReportController::class, 'transform'])->name('reports.transform');
     });
 });
 

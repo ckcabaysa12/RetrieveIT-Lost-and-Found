@@ -9,6 +9,24 @@
     <p class="mb-0">Monitor activity for your capstone documentation & defense.</p>
 </div>
 
+<div class="card-lf p-3 mb-4">
+    <p class="section-label mb-2">XML &amp; XSLT (IPT requirement)</p>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="{{ route('admin.reports.xml') }}" class="btn btn-lf-outline btn-sm" target="_blank">
+            <i class="bi bi-filetype-xml me-1"></i> View XML report
+        </a>
+        <a href="{{ route('admin.reports.transform') }}" class="btn btn-lf btn-sm" target="_blank">
+            <i class="bi bi-code-slash me-1"></i> View XSLT-transformed report
+        </a>
+    </div>
+    @unless($xsltEnabled)
+        <p class="small text-danger mb-0 mt-2">
+            <i class="bi bi-exclamation-triangle me-1"></i>
+            PHP <code>xsl</code> extension is disabled. Enable <code>extension=xsl</code> in php.ini for XSLT to work.
+        </p>
+    @endunless
+</div>
+
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card-lf p-0 h-100">
