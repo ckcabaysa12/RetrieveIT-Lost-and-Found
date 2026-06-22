@@ -2,7 +2,7 @@
 @section('title', 'Admin')
 
 @section('content')
-@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+@include('partials.back-button', ['url' => route('home'), 'label' => 'Back to home'])
 
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">Admin Panel</h1>
@@ -17,7 +17,7 @@
 </div>
 
 <div class="row g-3 mb-4">
-    <div class="col-6 col-md-3"><div class="stat-pill"><div class="num text-danger">{{ $stats['pending_claims'] }}</div><div class="lbl">Pending Claims</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat-pill"><div class="num text-danger">{{ $stats['pending_claims'] }}</div><div class="lbl">Pending Items</div></div></div>
 </div>
 
 <div class="d-flex flex-wrap gap-2 mb-4">

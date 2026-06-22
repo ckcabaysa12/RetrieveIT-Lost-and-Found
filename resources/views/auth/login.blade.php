@@ -1,5 +1,6 @@
 <x-guest-layout>
-    <h2 class="h5 fw-bold mb-4">Welcome back</h2>
+    <h2 class="h5 fw-bold mb-1">{{ config('app.name') }}</h2>
+    <p class="text-muted small mb-4">Log in to report lost or found items on campus.</p>
 
     <x-auth-session-status class="mb-3" :status="session('status')" />
 

@@ -26,9 +26,10 @@ class ReportController extends Controller
                 'lost' => \App\Models\Item::where('type', 'lost')->count(),
                 'found' => \App\Models\Item::where('type', 'found')->count(),
                 'returned' => \App\Models\Item::where('status', 'returned')->count(),
+                'pending_claim' => \App\Models\Item::where('status', 'pending_claim')->count(),
             ],
             'claimStats' => [
-                'pending' => \App\Models\Claim::where('status', 'pending')->count(),
+                'pending' => \App\Models\Item::where('status', 'pending_claim')->count(),
                 'approved' => \App\Models\Claim::where('status', 'approved')->count(),
                 'rejected' => \App\Models\Claim::where('status', 'rejected')->count(),
             ],

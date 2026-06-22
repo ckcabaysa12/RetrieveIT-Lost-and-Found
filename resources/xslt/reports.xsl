@@ -43,6 +43,7 @@
                             <div class="stat"><span>Lost</span><strong><xsl:value-of select="/retrieveit-report/items/lost"/></strong></div>
                             <div class="stat"><span>Found</span><strong><xsl:value-of select="/retrieveit-report/items/found"/></strong></div>
                             <div class="stat"><span>Returned</span><strong><xsl:value-of select="/retrieveit-report/items/returned"/></strong></div>
+                            <div class="stat"><span>Pending claim</span><strong><xsl:value-of select="/retrieveit-report/items/pending_claim"/></strong></div>
                         </div>
                         <div class="card">
                             <h2>Claims</h2>

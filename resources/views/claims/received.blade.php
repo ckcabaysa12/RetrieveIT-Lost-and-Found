@@ -2,7 +2,7 @@
 @section('title', 'Claims on My Found Items')
 
 @section('content')
-@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+@include('partials.back-button', ['url' => route('home'), 'label' => 'Back to home'])
 
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">Claims on My Found Items</h1>

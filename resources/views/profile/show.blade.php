@@ -2,7 +2,7 @@
 @section('title', 'Profile')
 
 @section('content')
-@include('partials.back-button', ['url' => auth()->user()->isVerified() || auth()->user()->isAdmin() ? route('dashboard') : route('verification.pending'), 'label' => auth()->user()->isVerified() || auth()->user()->isAdmin() ? 'Back to dashboard' : 'Back'])
+@include('partials.back-button', ['url' => auth()->user()->isVerified() || auth()->user()->isAdmin() ? route('home') : route('verification.pending'), 'label' => auth()->user()->isVerified() || auth()->user()->isAdmin() ? 'Back to home' : 'Back'])
 
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">My Profile</h1>

@@ -8,16 +8,13 @@
         </button>
         <div class="collapse navbar-collapse" id="mainNav">
             <ul class="navbar-nav gap-lg-1">
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link {{ request()->routeIs('items.index','items.show') ? 'active' : '' }}" href="{{ route('items.index') }}">Browse</a>
-                </li>
                 @auth
                     @if(auth()->user()->isVerified() || auth()->user()->isAdmin())
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
+                            <a class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}" href="{{ route('home') }}">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('items.index','items.show') ? 'active' : '' }}" href="{{ route('items.index') }}">Browse</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('items.mine','items.create') ? 'active' : '' }}" href="{{ route('items.mine') }}">My Items</a>

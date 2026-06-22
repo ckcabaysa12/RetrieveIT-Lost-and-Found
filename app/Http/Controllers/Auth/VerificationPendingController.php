@@ -13,7 +13,7 @@ class VerificationPendingController extends Controller
         $user = auth()->user();
 
         if ($user->isAdmin() || $user->isVerified()) {
-            return redirect()->route('dashboard');
+            return redirect()->route('home');
         }
 
         return view('auth.verification-pending', [

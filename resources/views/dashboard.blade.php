@@ -1,14 +1,23 @@
 @extends('layouts.app')
-@section('title', 'Dashboard')
+@section('title', 'Home')
 
 @section('content')
-<div class="page-hero mb-4">
-    <h1 class="h3 mb-1 d-inline-flex align-items-center gap-2 flex-wrap">
-        Hey, {{ auth()->user()->name }}!
-        @include('partials.verified-badge', ['user' => auth()->user(), 'verifiedOnly' => true])
-    </h1>
-    <p class="mb-0">Welcome to RetrieveIT.</p>
-</div>
+<section class="page-hero mb-4">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <p class="section-label text-white opacity-75 mb-2">IPT Project</p>
+            <h1 class="h3 mb-1 d-inline-flex align-items-center gap-2 flex-wrap">
+                Hey, {{ auth()->user()->name }}!
+                @include('partials.verified-badge', ['user' => auth()->user(), 'verifiedOnly' => true])
+            </h1>
+            <p class="lead mb-2">Web-Based Lost and Found Management System</p>
+            <p class="mb-0 opacity-90">Welcome to {{ config('app.name') }}.</p>
+        </div>
+        <div class="col-lg-4 d-none d-lg-block text-center position-relative" style="z-index:1">
+            @include('partials.logo', ['class' => 'site-logo--hero'])
+        </div>
+    </div>
+</section>
 
 <div class="row g-3 mb-4">
     <div class="col-md-4"><div class="stat-pill"><div class="num">{{ $stats['items'] }}</div><div class="lbl">My Items</div></div></div>
@@ -24,7 +33,7 @@
     <a href="{{ route('profile.show') }}" class="btn btn-lf-outline"><i class="bi bi-person me-1"></i> Profile</a>
 </div>
 
-<div class="row g-4">
+<div class="row g-4 mb-4">
     <div class="col-lg-6">
         <div class="card-lf">
             <div class="card-header">Recent Items</div>
@@ -60,9 +69,36 @@
     </div>
 </div>
 
-@if(auth()->user()->isAdmin())
-    <div class="mt-4 text-center">
-        <a href="{{ route('admin.dashboard') }}" class="admin-nav-pill"><i class="bi bi-speedometer2"></i> Open Admin Panel</a>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="feature-tile">
+            <div class="icon-wrap"><i class="bi bi-patch-check-fill"></i></div>
+            <h5 class="fw-bold">Verified Users</h5>
+            <p class="text-muted small mb-0">Upload your valid ID and earn the blue check badge for trusted claiming.</p>
+        </div>
     </div>
-@endif
+    <div class="col-md-4">
+        <div class="feature-tile">
+            <div class="icon-wrap"><i class="bi bi-search"></i></div>
+            <h5 class="fw-bold">Lost & Found Listings</h5>
+            <p class="text-muted small mb-0">Report lost or found items and browse listings with filters.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-tile">
+            <div class="icon-wrap"><i class="bi bi-geo-alt-fill"></i></div>
+            <h5 class="fw-bold">Safe Pickup</h5>
+            <p class="text-muted small mb-0">Claims approved with a code, date, time, and meeting point — only at campus-safe locations.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        @include('partials.claim-flow')
+    </div>
+    <div class="col-lg-5">
+        @include('partials.safe-pickup')
+    </div>
+</div>
 @endsection

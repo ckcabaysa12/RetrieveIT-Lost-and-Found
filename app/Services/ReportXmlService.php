@@ -22,10 +22,11 @@ class ReportXmlService
             'lost' => Item::where('type', 'lost')->count(),
             'found' => Item::where('type', 'found')->count(),
             'returned' => Item::where('status', 'returned')->count(),
+            'pending_claim' => Item::where('status', 'pending_claim')->count(),
         ];
 
         $claimStats = [
-            'pending' => Claim::where('status', 'pending')->count(),
+            'pending' => Item::where('status', 'pending_claim')->count(),
             'approved' => Claim::where('status', 'approved')->count(),
             'rejected' => Claim::where('status', 'rejected')->count(),
         ];

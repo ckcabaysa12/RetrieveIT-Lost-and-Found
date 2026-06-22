@@ -45,6 +45,7 @@
                 <li class="list-group-item d-flex justify-content-between"><span>Lost reports</span><strong>{{ $itemStats['lost'] }}</strong></li>
                 <li class="list-group-item d-flex justify-content-between"><span>Found reports</span><strong>{{ $itemStats['found'] }}</strong></li>
                 <li class="list-group-item d-flex justify-content-between"><span>Returned</span><strong class="text-success">{{ $itemStats['returned'] }}</strong></li>
+                <li class="list-group-item d-flex justify-content-between"><span>Pending claim</span><strong class="text-warning">{{ $itemStats['pending_claim'] }}</strong></li>
             </ul>
         </div>
     </div>

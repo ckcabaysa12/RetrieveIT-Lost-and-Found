@@ -9,13 +9,12 @@ use App\Http\Controllers\Admin\UserVerificationController;
 use App\Http\Controllers\Auth\VerificationPendingController;
 use App\Http\Controllers\ClaimController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('items/browse', [ItemController::class, 'index'])->name('items.index');
 
@@ -28,7 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::put('profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::middleware('verified.user')->group(function () {
-        Route::get('dashboard', DashboardController::class)->name('dashboard');
+        Route::redirect('dashboard', '/');
 
         Route::get('items/mine', [ItemController::class, 'myItems'])->name('items.mine');
         Route::get('items/create', [ItemController::class, 'create'])->name('items.create');

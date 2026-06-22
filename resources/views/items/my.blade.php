@@ -2,7 +2,7 @@
 @section('title', 'My Items')
 
 @section('content')
-@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+@include('partials.back-button', ['url' => route('home'), 'label' => 'Back to home'])
 
 <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
     <div>
