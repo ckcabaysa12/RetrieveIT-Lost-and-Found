@@ -19,7 +19,7 @@ class ReportController extends Controller
         return view('admin.reports.index', [
             'userStats' => [
                 'total' => \App\Models\User::where('role', 'user')->count(),
-                'verified' => \App\Models\User::where('role', 'user')->where('is_verified', true)->count(),
+                'verified' => \App\Models\User::where('role', 'user')->where('is_verified', true)->where('verification_status', 'verified')->count(),
                 'pending' => \App\Models\User::where('role', 'user')->where('verification_status', 'pending')->count(),
             ],
             'itemStats' => [

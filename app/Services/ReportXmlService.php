@@ -14,7 +14,7 @@ class ReportXmlService
     {
         $userStats = [
             'total' => User::where('role', 'user')->count(),
-            'verified' => User::where('role', 'user')->where('is_verified', true)->count(),
+            'verified' => User::where('role', 'user')->where('is_verified', true)->where('verification_status', 'verified')->count(),
             'pending' => User::where('role', 'user')->where('verification_status', 'pending')->count(),
         ];
 

@@ -14,7 +14,9 @@ class UserVerificationController extends Controller
     {
         $query = User::where('role', 'user')->latest();
 
-        if ($request->filled('status')) {
+        if (! $request->has('status')) {
+            $query->where('verification_status', 'pending');
+        } elseif ($request->filled('status')) {
             $query->where('verification_status', $request->status);
         }
 
