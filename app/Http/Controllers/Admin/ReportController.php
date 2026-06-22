@@ -40,8 +40,11 @@ class ReportController extends Controller
 
     public function xml(): Response
     {
+        $filename = 'retrieveit-report-'.now()->format('Y-m-d-His').'.xml';
+
         return response($this->reportXml->toXmlString(), 200, [
             'Content-Type' => 'application/xml; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
 
@@ -63,8 +66,11 @@ class ReportController extends Controller
             abort(500, 'XSLT transformation failed.');
         }
 
+        $filename = 'retrieveit-report-'.now()->format('Y-m-d-His').'.html';
+
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }
 }

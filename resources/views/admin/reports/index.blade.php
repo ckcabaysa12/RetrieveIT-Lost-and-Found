@@ -11,12 +11,13 @@
 
 <div class="card-lf p-3 mb-4">
     <p class="section-label mb-2">XML &amp; XSLT (IPT requirement)</p>
+    <p class="small text-muted mb-2">Download the raw XML data file and the XSLT-transformed HTML report for your IPT documentation.</p>
     <div class="d-flex flex-wrap gap-2">
-        <a href="{{ route('admin.reports.xml') }}" class="btn btn-lf-outline btn-sm" target="_blank">
-            <i class="bi bi-filetype-xml me-1"></i> View XML report
+        <a href="{{ route('admin.reports.xml') }}" class="btn btn-lf-outline btn-sm">
+            <i class="bi bi-download me-1"></i> Download XML report
         </a>
-        <a href="{{ route('admin.reports.transform') }}" class="btn btn-lf btn-sm" target="_blank">
-            <i class="bi bi-code-slash me-1"></i> View XSLT-transformed report
+        <a href="{{ route('admin.reports.transform') }}" class="btn btn-lf btn-sm">
+            <i class="bi bi-download me-1"></i> Download XSLT report
         </a>
     </div>
     @unless($xsltEnabled)
