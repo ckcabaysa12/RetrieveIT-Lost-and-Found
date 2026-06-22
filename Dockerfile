@@ -14,17 +14,6 @@ WORKDIR /var/www/html
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist
 
-COPY package.json package-lock.json vite.config.js postcss.config.js tailwind.config.js ./
-COPY resources ./resources
-COPY public ./public
-
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
-    && apt-get install -y nodejs \
-    && npm ci \
-    && npm run build \
-    && apt-get purge -y nodejs \
-    && rm -rf /var/lib/apt/lists/*
-
 COPY . .
 RUN composer dump-autoload --optimize
 
