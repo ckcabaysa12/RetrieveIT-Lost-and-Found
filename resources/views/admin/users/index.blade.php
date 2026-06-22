@@ -7,7 +7,9 @@
         <p class="section-label mb-0">Blue check system</p>
         <h1 class="h4 fw-bold mb-0">User Verification</h1>
     </div>
-    <form method="GET">
+    <div class="d-flex gap-2 align-items-center">
+        @include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
+        <form method="GET">
         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
             <option value="">All statuses</option>
             <option value="pending" @selected(request('status')==='pending')>Pending</option>
@@ -15,6 +17,7 @@
             <option value="rejected" @selected(request('status')==='rejected')>Rejected</option>
         </select>
     </form>
+    </div>
 </div>
 
 @foreach($users as $user)

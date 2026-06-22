@@ -15,21 +15,27 @@
                     <a class="nav-link {{ request()->routeIs('items.index','items.show') ? 'active' : '' }}" href="{{ route('items.index') }}">Browse</a>
                 </li>
                 @auth
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('items.mine','items.create') ? 'active' : '' }}" href="{{ route('items.mine') }}">My Items</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('items.create') ? 'active' : '' }}" href="{{ route('items.create') }}">Report Item</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('claims.index','claims.show') ? 'active' : '' }}" href="{{ route('claims.index') }}">My Claims</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('claims.received') ? 'active' : '' }}" href="{{ route('claims.received') }}">Claims on My Items</a>
-                    </li>
+                    @if(auth()->user()->isVerified() || auth()->user()->isAdmin())
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('items.mine','items.create') ? 'active' : '' }}" href="{{ route('items.mine') }}">My Items</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('items.create') ? 'active' : '' }}" href="{{ route('items.create') }}">Report Item</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('claims.index','claims.show') ? 'active' : '' }}" href="{{ route('claims.index') }}">My Claims</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('claims.received') ? 'active' : '' }}" href="{{ route('claims.received') }}">Claims on My Items</a>
+                        </li>
+                    @else
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('verification.pending') ? 'active' : '' }}" href="{{ route('verification.pending') }}">ID Verification</a>
+                        </li>
+                    @endif
                     @if(auth()->user()->isAdmin())
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.*') ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">Admin Panel</a>

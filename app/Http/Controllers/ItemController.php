@@ -94,11 +94,13 @@ class ItemController extends Controller
         $item->load(['user', 'category', 'claims']);
 
         $canClaim = auth()->check()
+            && auth()->user()->isVerified()
             && $item->type === 'found'
             && $item->isBrowsable()
             && $item->user_id !== auth()->id();
 
         $canReportFound = auth()->check()
+            && auth()->user()->isVerified()
             && $item->type === 'lost'
             && $item->isBrowsable()
             && $item->user_id !== auth()->id();

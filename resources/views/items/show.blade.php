@@ -80,6 +80,12 @@
                         </a>
                     @endif
                 </div>
+            @elseif(!auth()->user()->isVerified())
+                <div class="card-lf p-4 text-center">
+                    <p class="fw-medium mb-2">ID approval required</p>
+                    <p class="small text-muted mb-3">An admin must verify your valid ID before you can claim or report items.</p>
+                    <a href="{{ route('verification.pending') }}" class="btn btn-lf-outline w-100">View verification status</a>
+                </div>
             @elseif($item->status !== 'available')
                 <div class="card-lf p-4">
                     <p class="fw-medium mb-1"><i class="bi bi-lock me-1"></i> Not available</p>

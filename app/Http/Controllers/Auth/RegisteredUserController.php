@@ -42,15 +42,15 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'id_image' => $request->file('id_image')->store('id_cards', 'public'),
             'role' => 'user',
-            'verification_status' => 'verified',
-            'is_verified' => true,
+            'verification_status' => 'pending',
+            'is_verified' => false,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(route('dashboard', absolute: false))
-            ->with('success', 'Account created! You can now browse and report items.');
+        return redirect(route('verification.pending', absolute: false))
+            ->with('success', 'Account created! An admin will review your valid ID before you can use the site.');
     }
 }

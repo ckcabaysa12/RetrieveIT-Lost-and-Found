@@ -44,6 +44,11 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    public function isVerified(): bool
+    {
+        return $this->is_verified && $this->verification_status === 'verified';
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);

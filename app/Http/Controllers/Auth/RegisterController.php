@@ -36,7 +36,7 @@ class RegisterController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')
+        return redirect()->route('verification.pending')
             ->with('success', 'Registration successful. Your ID is pending admin verification.');
     }
 }

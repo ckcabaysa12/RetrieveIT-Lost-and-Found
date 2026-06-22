@@ -11,12 +11,17 @@
 
 <div class="row g-3 mb-4">
     <div class="col-6 col-md-3"><div class="stat-pill"><div class="num">{{ $stats['users'] }}</div><div class="lbl">Users</div></div></div>
+    <div class="col-6 col-md-3"><div class="stat-pill"><div class="num text-warning">{{ $stats['pending_users'] }}</div><div class="lbl">Pending IDs</div></div></div>
     <div class="col-6 col-md-3"><div class="stat-pill"><div class="num">{{ $stats['items'] }}</div><div class="lbl">Items</div></div></div>
     <div class="col-6 col-md-3"><div class="stat-pill"><div class="num">{{ $stats['available_items'] }}</div><div class="lbl">Available</div></div></div>
+</div>
+
+<div class="row g-3 mb-4">
     <div class="col-6 col-md-3"><div class="stat-pill"><div class="num text-danger">{{ $stats['pending_claims'] }}</div><div class="lbl">Pending Claims</div></div></div>
 </div>
 
 <div class="d-flex flex-wrap gap-2 mb-4">
+    <a href="{{ route('admin.users.index', ['status' => 'pending']) }}" class="admin-nav-pill"><i class="bi bi-person-check"></i> Verify Users</a>
     <a href="{{ route('admin.items.index') }}" class="admin-nav-pill"><i class="bi bi-box"></i> Items</a>
     <a href="{{ route('admin.claims.index') }}" class="admin-nav-pill"><i class="bi bi-clipboard-check"></i> Claims</a>
     <a href="{{ route('admin.categories.index') }}" class="admin-nav-pill"><i class="bi bi-tags"></i> Categories</a>

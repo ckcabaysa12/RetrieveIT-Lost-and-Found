@@ -41,6 +41,11 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($user->id_image);
             }
             $data['id_image'] = $request->file('id_image')->store('id_cards', 'public');
+
+            if (! $user->isAdmin() && ! $user->isVerified()) {
+                $data['verification_status'] = 'pending';
+                $data['is_verified'] = false;
+            }
         }
 
         $user->update($data);

@@ -43,7 +43,7 @@
         <div class="mb-3">
             <x-input-label for="id_image" value="Valid ID photo" />
             <input id="id_image" type="file" name="id_image" class="form-control" accept="image/*" required>
-            <div class="form-text">Clear photo of a valid ID. Used for your blue check badge.</div>
+            <div class="form-text">Clear photo of a valid ID. An admin must approve it before you can use the site.</div>
             <x-input-error :messages="$errors->get('id_image')" />
         </div>
 

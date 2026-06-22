@@ -32,6 +32,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended(route('admin.dashboard', absolute: false));
         }
 
+        if (! Auth::user()->isVerified()) {
+            return redirect()->intended(route('verification.pending', absolute: false));
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
