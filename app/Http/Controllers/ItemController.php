@@ -12,7 +12,7 @@ class ItemController extends Controller
 {
     public function index(Request $request): View
     {
-        $query = Item::with(['user', 'category', 'claims'])
+        $query = Item::with(['user', 'category', 'claims', 'images'])
             ->whereIn('status', ['available', 'pending_claim'])
             ->latest();
 
@@ -73,17 +73,31 @@ class ItemController extends Controller
             'description' => ['required', 'string'],
             'location' => ['required', 'string', 'max:255'],
             'date_reported' => ['required', 'date'],
-            'image' => ['nullable', 'image', 'max:4096'],
+            'images' => ['nullable', 'array', 'max:8'],
+            'images.*' => ['image', 'max:4096'],
         ]);
 
         $data['user_id'] = auth()->id();
         $data['status'] = 'available';
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('items', 'public');
-        }
+        unset($data['images']);
 
         $item = Item::create($data);
+
+        $coverPath = null;
+        foreach ($request->file('images', []) as $index => $file) {
+            $path = $file->store('items', 'public');
+            $item->images()->create([
+                'path' => $path,
+                'sort_order' => $index,
+            ]);
+            if ($index === 0) {
+                $coverPath = $path;
+            }
+        }
+
+        if ($coverPath) {
+            $item->update(['image' => $coverPath]);
+        }
 
         return redirect()->route('items.show', $item)
             ->with('success', 'Item reported successfully.');
@@ -91,7 +105,7 @@ class ItemController extends Controller
 
     public function show(Item $item): View
     {
-        $item->load(['user', 'category', 'claims']);
+        $item->load(['user', 'category', 'claims', 'images']);
 
         $canClaim = auth()->check()
             && auth()->user()->isVerified()

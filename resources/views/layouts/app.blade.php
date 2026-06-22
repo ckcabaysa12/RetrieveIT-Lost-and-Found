@@ -85,9 +85,12 @@
         .feature-tile .icon-wrap { width: 44px; height: 44px; border-radius: 12px; background: var(--lf-teal-soft); color: var(--lf-teal); display: flex; align-items: center; justify-content: center; font-size: 1.25rem; margin-bottom: .75rem; }
 
         .item-card { border-radius: var(--lf-radius); overflow: hidden; }
-        .item-card .card-img-wrap { height: 190px; background: var(--lf-teal-soft); overflow: hidden; }
-        .item-card .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+        .item-card .card-img-wrap { height: 190px; background: var(--lf-teal-soft); overflow: hidden; position: relative; }
+        .item-card .card-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
+        .item-card .item-card-photo-link:hover img { transform: scale(1.03); }
+        .item-card .photo-count-badge { position: absolute; bottom: .5rem; right: .5rem; background: rgba(0,0,0,.65); color: #fff; font-size: .75rem; padding: .2rem .5rem; border-radius: 999px; }
         .item-card .placeholder-img { height: 100%; display: flex; align-items: center; justify-content: center; color: var(--lf-teal); font-size: 2.5rem; opacity: .4; }
+        .gallery-thumb.active img { outline: 2px solid var(--lf-teal); outline-offset: 2px; }
 
         .admin-nav-pill { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1rem; border-radius: 12px; background: var(--lf-card); border: 1px solid rgba(45,106,106,.12); color: var(--lf-teal); text-decoration: none; font-weight: 600; font-size: .875rem; transition: all .2s; }
         .admin-nav-pill:hover { background: var(--lf-teal); color: #fff; border-color: var(--lf-teal); }

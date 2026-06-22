@@ -7,9 +7,11 @@
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card-lf mb-4">
-            @if($url = $item->imageUrl())
-                <img src="{{ $url }}" class="w-100" alt="" style="max-height:340px;object-fit:cover">
-            @endif
+            @include('partials.item-photo-gallery', [
+                'urls' => $item->imageUrls(),
+                'alt' => $item->title,
+                'id' => $item->id,
+            ])
             <div class="p-4">
                 <div class="mb-2">
                     <span class="{{ $item->type === 'found' ? 'badge-found' : 'badge-lost' }}">{{ ucfirst($item->type) }}</span>

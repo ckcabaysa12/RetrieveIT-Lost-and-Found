@@ -59,9 +59,16 @@
                             value="{{ old('date_reported', date('Y-m-d')) }}" required>
                     </div>
                     <div class="col-12">
-                        <label class="form-label fw-medium">Photo <span class="text-muted fw-normal">(optional)</span></label>
-                        <input type="file" name="image" class="form-control" accept="image/*">
-                        <x-input-error :messages="$errors->get('image')" />
+                        <label class="form-label fw-medium">Photos <span class="text-muted fw-normal">(optional, up to 8)</span></label>
+                        <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
+                        <div class="form-text">Add several angles or details so the owner can identify the item.</div>
+                        @if($errors->has('images') || $errors->has('images.*'))
+                            <div class="text-danger small mt-1">
+                                @foreach(array_merge($errors->get('images'), $errors->get('images.*')) as $message)
+                                    <div>{{ $message }}</div>
+                                @endforeach
+                            </div>
+                        @endif
                     </div>
                     <div class="col-12">
                         <button class="btn btn-lf">Submit Report</button>

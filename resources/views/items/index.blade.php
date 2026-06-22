@@ -49,13 +49,17 @@
         @endphp
         <div class="col-md-6 col-lg-4">
             <div class="card-lf item-card h-100 d-flex flex-column">
-                <div class="card-img-wrap">
+                <a href="{{ route('items.show', $item) }}" class="card-img-wrap d-block text-decoration-none item-card-photo-link" title="View {{ $item->title }}">
                     @if($url = $item->imageUrl())
-                        <img src="{{ $url }}" alt="">
+                        <img src="{{ $url }}" alt="{{ $item->title }}">
+                        @php $photoCount = count($item->imageUrls()); @endphp
+                        @if($photoCount > 1)
+                            <span class="photo-count-badge"><i class="bi bi-images"></i> {{ $photoCount }}</span>
+                        @endif
                     @else
                         <div class="placeholder-img"><i class="bi bi-image"></i></div>
                     @endif
-                </div>
+                </a>
                 <div class="p-3 flex-grow-1 d-flex flex-column">
                     <div class="mb-2">
                         <span class="{{ $item->type === 'found' ? 'badge-found' : 'badge-lost' }}">{{ ucfirst($item->type) }}</span>
