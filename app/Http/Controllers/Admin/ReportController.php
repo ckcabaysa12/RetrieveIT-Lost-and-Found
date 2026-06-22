@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\ReportExcelExportService;
 use App\Services\ReportXmlService;
 use DOMDocument;
 use Illuminate\Http\Response;
@@ -12,7 +13,10 @@ use XSLTProcessor;
 
 class ReportController extends Controller
 {
-    public function __construct(private ReportXmlService $reportXml) {}
+    public function __construct(
+        private ReportXmlService $reportXml,
+        private ReportExcelExportService $reportExcel,
+    ) {}
 
     public function index(): View
     {
@@ -70,6 +74,16 @@ class ReportController extends Controller
 
         return response($html, 200, [
             'Content-Type' => 'text/html; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
+        ]);
+    }
+
+    public function excel(): Response
+    {
+        $filename = 'retrieveit-report-'.now()->format('Y-m-d-His').'.csv';
+
+        return response($this->reportExcel->toCsvString(), 200, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ]);
     }

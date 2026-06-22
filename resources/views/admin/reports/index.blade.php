@@ -28,6 +28,14 @@
     @endunless
 </div>
 
+<div class="card-lf p-3 mb-4">
+    <p class="section-label mb-2">Excel export</p>
+    <p class="small text-muted mb-2">Spreadsheet version of the same report data. Opens in Microsoft Excel or Google Sheets.</p>
+    <a href="{{ route('admin.reports.excel') }}" class="btn btn-lf-outline btn-sm">
+        <i class="bi bi-file-earmark-spreadsheet me-1"></i> Download Excel report
+    </a>
+</div>
+
 <div class="row g-3 mb-4">
     <div class="col-md-4">
         <div class="card-lf p-0 h-100">

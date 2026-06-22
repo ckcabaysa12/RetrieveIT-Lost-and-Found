@@ -10,35 +10,55 @@ use DOMDocument;
 
 class ReportXmlService
 {
+    /**
+     * @return array{
+     *     generated_at: string,
+     *     system: string,
+     *     userStats: array<string, int>,
+     *     itemStats: array<string, int>,
+     *     claimStats: array<string, int>,
+     *     byCategory: \Illuminate\Support\Collection<int, Category>
+     * }
+     */
+    public function reportData(): array
+    {
+        return [
+            'generated_at' => now()->toIso8601String(),
+            'system' => config('app.name'),
+            'userStats' => [
+                'total' => User::where('role', 'user')->count(),
+                'verified' => User::where('role', 'user')->where('is_verified', true)->where('verification_status', 'verified')->count(),
+                'pending' => User::where('role', 'user')->where('verification_status', 'pending')->count(),
+            ],
+            'itemStats' => [
+                'lost' => Item::where('type', 'lost')->count(),
+                'found' => Item::where('type', 'found')->count(),
+                'returned' => Item::where('status', 'returned')->count(),
+                'pending_claim' => Item::where('status', 'pending_claim')->count(),
+            ],
+            'claimStats' => [
+                'pending' => Item::where('status', 'pending_claim')->count(),
+                'approved' => Claim::where('status', 'approved')->count(),
+                'rejected' => Claim::where('status', 'rejected')->count(),
+            ],
+            'byCategory' => Category::withCount('items')->orderByDesc('items_count')->get(),
+        ];
+    }
+
     public function buildDom(): DOMDocument
     {
-        $userStats = [
-            'total' => User::where('role', 'user')->count(),
-            'verified' => User::where('role', 'user')->where('is_verified', true)->where('verification_status', 'verified')->count(),
-            'pending' => User::where('role', 'user')->where('verification_status', 'pending')->count(),
-        ];
-
-        $itemStats = [
-            'lost' => Item::where('type', 'lost')->count(),
-            'found' => Item::where('type', 'found')->count(),
-            'returned' => Item::where('status', 'returned')->count(),
-            'pending_claim' => Item::where('status', 'pending_claim')->count(),
-        ];
-
-        $claimStats = [
-            'pending' => Item::where('status', 'pending_claim')->count(),
-            'approved' => Claim::where('status', 'approved')->count(),
-            'rejected' => Claim::where('status', 'rejected')->count(),
-        ];
-
-        $byCategory = Category::withCount('items')->orderByDesc('items_count')->get();
+        $data = $this->reportData();
+        $userStats = $data['userStats'];
+        $itemStats = $data['itemStats'];
+        $claimStats = $data['claimStats'];
+        $byCategory = $data['byCategory'];
 
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
 
         $root = $dom->createElement('retrieveit-report');
-        $root->setAttribute('generated-at', now()->toIso8601String());
-        $root->setAttribute('system', config('app.name'));
+        $root->setAttribute('generated-at', $data['generated_at']);
+        $root->setAttribute('system', $data['system']);
         $dom->appendChild($root);
 
         $users = $dom->createElement('users');

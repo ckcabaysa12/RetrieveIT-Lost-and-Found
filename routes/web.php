@@ -67,6 +67,7 @@ Route::middleware('auth')->group(function () {
             Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
             Route::get('reports/xml', [ReportController::class, 'xml'])->name('reports.xml');
             Route::get('reports/transform', [ReportController::class, 'transform'])->name('reports.transform');
+            Route::get('reports/excel', [ReportController::class, 'excel'])->name('reports.excel');
         });
     });
 });
