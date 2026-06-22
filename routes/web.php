@@ -38,6 +38,7 @@ Route::middleware('auth')->group(function () {
         Route::post('items', [ItemController::class, 'store'])->name('items.store');
         Route::get('items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
         Route::put('items/{item}', [ItemController::class, 'update'])->name('items.update');
+        Route::delete('items/{item}', [ItemController::class, 'destroy'])->name('items.destroy');
 
         Route::get('claims', [ClaimController::class, 'index'])->name('claims.index');
         Route::get('claims/received', [ClaimController::class, 'received'])->name('claims.received');

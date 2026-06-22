@@ -81,6 +81,7 @@
                             <a href="{{ route('items.edit', $item) }}" class="btn btn-lf btn-sm">
                                 <i class="bi bi-pencil me-1"></i> Edit listing
                             </a>
+                            @include('partials.remove-item-form', ['item' => $item])
                         @endif
                         @if($item->type === 'found')
                             <a href="{{ route('claims.received', ['item' => $item->id]) }}" class="btn btn-lf-outline btn-sm">

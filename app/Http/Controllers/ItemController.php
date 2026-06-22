@@ -152,6 +152,26 @@ class ItemController extends Controller
             ->with('success', 'Listing updated successfully.');
     }
 
+    public function destroy(Item $item): RedirectResponse
+    {
+        $this->assertOwnerCanEdit($item);
+
+        $item->load('images');
+
+        foreach ($item->images as $image) {
+            Storage::disk('public')->delete($image->path);
+        }
+
+        if ($item->image) {
+            Storage::disk('public')->delete($item->image);
+        }
+
+        $item->delete();
+
+        return redirect()->route('items.mine')
+            ->with('success', 'Listing removed successfully.');
+    }
+
     public function show(Item $item): View
     {
         $item->load(['user', 'category', 'claims', 'images']);

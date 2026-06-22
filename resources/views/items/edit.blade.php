@@ -109,6 +109,12 @@
                 </div>
             </form>
         </div>
+
+        <div class="card-lf p-4 mt-4 border-danger-subtle">
+            <h2 class="h6 fw-bold text-danger mb-2">Remove listing</h2>
+            <p class="small text-muted mb-3">Permanently delete this post and all of its photos. This cannot be undone.</p>
+            @include('partials.remove-item-form', ['item' => $item, 'label' => 'Remove listing'])
+        </div>
     </div>
 </div>
 @endsection

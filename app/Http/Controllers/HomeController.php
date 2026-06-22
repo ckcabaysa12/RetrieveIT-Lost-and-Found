@@ -19,10 +19,6 @@ class HomeController extends Controller
             return redirect()->route('verification.pending');
         }
 
-        if ($user->isAdmin()) {
-            return redirect()->route('admin.dashboard');
-        }
-
         return app(DashboardController::class)();
     }
 }

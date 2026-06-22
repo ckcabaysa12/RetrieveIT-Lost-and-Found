@@ -29,6 +29,7 @@
                             <a href="{{ route('items.show', $item) }}" class="btn btn-lf-outline btn-sm">View</a>
                             @if($item->canBeEditedByOwner())
                                 <a href="{{ route('items.edit', $item) }}" class="btn btn-lf-outline btn-sm">Edit</a>
+                                @include('partials.remove-item-form', ['item' => $item])
                             @endif
                         </td>
                     </tr>
