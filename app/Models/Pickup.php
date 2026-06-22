@@ -13,7 +13,9 @@ class Pickup extends Model
         'date',
         'time',
         'status',
+        'schedule_proposed_by',
         'finder_confirmed_at',
+        'owner_confirmed_schedule_at',
         'reschedule_note',
         'reschedule_date',
         'reschedule_time',
@@ -26,6 +28,7 @@ class Pickup extends Model
             'date' => 'date',
             'reschedule_date' => 'date',
             'finder_confirmed_at' => 'datetime',
+            'owner_confirmed_schedule_at' => 'datetime',
         ];
     }
 
@@ -34,14 +37,32 @@ class Pickup extends Model
         return $this->belongsTo(Claim::class);
     }
 
-    public function isAwaitingOwnerSchedule(): bool
+    public function canBeScheduled(): bool
     {
         return in_array($this->status, ['awaiting_schedule', 'reschedule_requested'], true);
+    }
+
+    public function isAwaitingOwnerSchedule(): bool
+    {
+        return $this->canBeScheduled();
     }
 
     public function isAwaitingFinder(): bool
     {
         return $this->status === 'awaiting_finder';
+    }
+
+    public function isAwaitingOwner(): bool
+    {
+        return $this->status === 'awaiting_owner';
+    }
+
+    public function hasFinderAvailability(): bool
+    {
+        return $this->status === 'reschedule_requested'
+            && $this->reschedule_requested_by === 'finder'
+            && $this->reschedule_date
+            && $this->reschedule_time;
     }
 
     public function isConfirmed(): bool
@@ -52,8 +73,9 @@ class Pickup extends Model
     public function statusLabel(): string
     {
         return match ($this->status) {
-            'awaiting_schedule' => 'Owner needs to propose schedule',
+            'awaiting_schedule' => 'Waiting for a pickup schedule',
             'awaiting_finder' => 'Waiting for finder to confirm',
+            'awaiting_owner' => 'Waiting for owner to accept schedule',
             'reschedule_requested' => 'Reschedule requested',
             'confirmed' => 'Pickup confirmed',
             'completed' => 'Completed',

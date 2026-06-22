@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
         Route::post('claims/{claim}/reject-ownership', [ClaimController::class, 'rejectOwnership'])->name('claims.reject-ownership');
         Route::post('claims/{claim}/schedule', [ClaimController::class, 'proposeSchedule'])->name('claims.schedule');
         Route::post('claims/{claim}/confirm-schedule', [ClaimController::class, 'confirmSchedule'])->name('claims.confirm-schedule');
+        Route::post('claims/{claim}/accept-finder-availability', [ClaimController::class, 'acceptFinderAvailability'])->name('claims.accept-finder-availability');
         Route::post('claims/{claim}/reschedule', [ClaimController::class, 'requestReschedule'])->name('claims.reschedule');
         Route::post('claims/{claim}/confirm', [ClaimController::class, 'confirmReceipt'])->name('claims.confirm');
         Route::post('items/{item}/claims', [ClaimController::class, 'store'])->name('claims.store');

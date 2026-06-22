@@ -130,11 +130,13 @@ class ClaimController extends Controller
 
     public function proposeSchedule(Request $request, Claim $claim): RedirectResponse
     {
-        abort_unless($claim->user_id === auth()->id(), 403);
-        abort_unless($claim->status === 'approved', 403);
+        $claim->load(['pickup', 'item']);
+        $isClaimer = $claim->user_id === auth()->id();
+        $isFinder = $claim->item->user_id === auth()->id();
 
-        $claim->load('pickup');
-        abort_unless($claim->pickup && $claim->pickup->isAwaitingOwnerSchedule(), 403);
+        abort_unless($isClaimer || $isFinder, 403);
+        abort_unless($claim->status === 'approved', 403);
+        abort_unless($claim->pickup && $claim->pickup->canBeScheduled(), 403);
 
         $data = $request->validate([
             'location' => ['required', Rule::in(config('pickup.safe_locations'))],
@@ -146,29 +148,79 @@ class ClaimController extends Controller
             'location' => $data['location'],
             'date' => $data['date'],
             'time' => $data['time'],
-            'status' => 'awaiting_finder',
+            'status' => $isClaimer ? 'awaiting_finder' : 'awaiting_owner',
+            'schedule_proposed_by' => $isClaimer ? 'owner' : 'finder',
             'finder_confirmed_at' => null,
+            'owner_confirmed_schedule_at' => null,
             'reschedule_note' => null,
             'reschedule_date' => null,
             'reschedule_time' => null,
             'reschedule_requested_by' => null,
         ]);
 
-        return back()->with('success', 'Pickup schedule sent to the finder for confirmation.');
+        return back()->with('success', $isClaimer
+            ? 'Pickup schedule sent to the finder for confirmation.'
+            : 'Pickup schedule sent to the owner for approval.');
     }
 
     public function confirmSchedule(Claim $claim): RedirectResponse
     {
         $claim->load(['pickup', 'item']);
-        abort_unless($claim->item->user_id === auth()->id(), 403);
-        abort_unless($claim->status === 'approved' && $claim->pickup?->isAwaitingFinder(), 403);
+        $isClaimer = $claim->user_id === auth()->id();
+        $isFinder = $claim->item->user_id === auth()->id();
 
-        $claim->pickup->update([
-            'status' => 'confirmed',
-            'finder_confirmed_at' => now(),
+        abort_unless($claim->status === 'approved' && $claim->pickup, 403);
+
+        if ($claim->pickup->isAwaitingFinder()) {
+            abort_unless($isFinder, 403);
+
+            $claim->pickup->update([
+                'status' => 'confirmed',
+                'finder_confirmed_at' => now(),
+            ]);
+
+            return back()->with('success', 'Pickup schedule confirmed. Meet at the safe location with the claim code.');
+        }
+
+        if ($claim->pickup->isAwaitingOwner()) {
+            abort_unless($isClaimer, 403);
+
+            $claim->pickup->update([
+                'status' => 'confirmed',
+                'owner_confirmed_schedule_at' => now(),
+            ]);
+
+            return back()->with('success', 'Pickup schedule accepted. Meet at the safe location with the claim code.');
+        }
+
+        abort(403);
+    }
+
+    public function acceptFinderAvailability(Request $request, Claim $claim): RedirectResponse
+    {
+        $claim->load(['pickup', 'item']);
+
+        abort_unless($claim->user_id === auth()->id(), 403);
+        abort_unless($claim->status === 'approved' && $claim->pickup?->hasFinderAvailability(), 403);
+
+        $data = $request->validate([
+            'location' => ['required', Rule::in(config('pickup.safe_locations'))],
         ]);
 
-        return back()->with('success', 'Pickup schedule confirmed. Meet at the safe location with the claim code.');
+        $claim->pickup->update([
+            'location' => $data['location'],
+            'date' => $claim->pickup->reschedule_date,
+            'time' => $claim->pickup->reschedule_time,
+            'status' => 'confirmed',
+            'schedule_proposed_by' => 'finder',
+            'owner_confirmed_schedule_at' => now(),
+            'reschedule_note' => null,
+            'reschedule_date' => null,
+            'reschedule_time' => null,
+            'reschedule_requested_by' => null,
+        ]);
+
+        return back()->with('success', 'Finder availability accepted. Pickup schedule is confirmed.');
     }
 
     public function requestReschedule(Request $request, Claim $claim): RedirectResponse
@@ -179,7 +231,7 @@ class ClaimController extends Controller
 
         abort_unless($isClaimer || $isFinder, 403);
         abort_unless($claim->status === 'approved' && $claim->pickup, 403);
-        abort_unless(in_array($claim->pickup->status, ['awaiting_finder', 'confirmed'], true), 403);
+        abort_unless(in_array($claim->pickup->status, ['awaiting_finder', 'awaiting_owner', 'confirmed'], true), 403);
 
         $data = $request->validate([
             'reschedule_note' => ['required', 'string', 'min:10', 'max:500'],
@@ -211,7 +263,7 @@ class ClaimController extends Controller
         abort_if($claim->isConfirmedByOwner(), 403);
 
         $claim->load('item', 'pickup');
-        abort_unless($claim->pickup?->isConfirmed(), 403, 'Pickup must be confirmed by the finder first.');
+        abort_unless($claim->pickup?->isConfirmed(), 403, 'Pickup schedule must be confirmed before you can close the case.');
 
         $claim->update(['owner_confirmed_at' => now()]);
         $claim->pickup->update(['status' => 'completed']);

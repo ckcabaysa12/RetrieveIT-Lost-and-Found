@@ -71,6 +71,10 @@
                     </ul>
                     @if($claim->pickup->finder_confirmed_at)
                         <p class="small text-success mb-0 mt-2"><i class="bi bi-check-circle"></i> Finder confirmed {{ $claim->pickup->finder_confirmed_at->format('M d, g:i A') }}</p>
+                    @elseif($claim->pickup->owner_confirmed_schedule_at)
+                        <p class="small text-success mb-0 mt-2"><i class="bi bi-check-circle"></i> Owner accepted {{ $claim->pickup->owner_confirmed_schedule_at->format('M d, g:i A') }}</p>
+                    @elseif($claim->pickup->schedule_proposed_by)
+                        <p class="small text-muted mb-0 mt-2">Proposed by {{ $claim->pickup->schedule_proposed_by === 'owner' ? 'owner' : 'finder' }} — waiting for {{ $claim->pickup->schedule_proposed_by === 'owner' ? 'finder confirmation' : 'owner approval' }}.</p>
                     @endif
                 </div>
             @endif
@@ -110,10 +114,10 @@
         @endif
 
         {{-- Owner: propose schedule --}}
-        @if($isClaimer && $claim->status === 'approved' && $claim->pickup?->isAwaitingOwnerSchedule())
+        @if($isClaimer && $claim->status === 'approved' && $claim->pickup?->canBeScheduled())
             <div class="card-lf p-4 mb-3">
                 <h5 class="fw-bold mb-2"><i class="bi bi-calendar-plus me-1"></i> Propose pickup schedule</h5>
-                @if($claim->pickup->status === 'reschedule_requested' && $claim->pickup->reschedule_requested_by === 'finder' && $claim->pickup->reschedule_date && $claim->pickup->reschedule_time)
+                @if($claim->pickup->hasFinderAvailability())
                     <div class="alert alert-info small py-2">
                         <i class="bi bi-clock me-1"></i>
                         <strong>Finder availability:</strong>
@@ -121,7 +125,7 @@
                         at {{ \Illuminate\Support\Carbon::parse($claim->pickup->reschedule_time)->format('g:i A') }}
                     </div>
                 @endif
-                <p class="small text-muted mb-3">You (the owner) choose a safe location, date, and time. The finder must confirm before pickup.</p>
+                <p class="small text-muted mb-3">Choose a safe location, date, and time. The finder must confirm before pickup.</p>
                 @include('partials.safe-pickup')
                 <form method="POST" action="{{ route('claims.schedule', $claim) }}" class="mt-3">
                     @csrf
@@ -148,7 +152,70 @@
             </div>
         @endif
 
-        {{-- Finder: confirm schedule --}}
+        {{-- Finder: propose schedule --}}
+        @if($isFinder && $claim->status === 'approved' && $claim->pickup?->canBeScheduled())
+            <div class="card-lf p-4 mb-3">
+                <h5 class="fw-bold mb-2"><i class="bi bi-calendar-plus me-1"></i> Propose pickup schedule</h5>
+                <p class="small text-muted mb-3">You have the item. Propose a safe location, date, and time for the owner to approve.</p>
+                @include('partials.safe-pickup')
+                <form method="POST" action="{{ route('claims.schedule', $claim) }}" class="mt-3">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Safe location</label>
+                        <select name="location" class="form-select" required>
+                            @foreach($safeLocations as $loc)
+                                <option value="{{ $loc }}" @selected(old('location', $claim->pickup->location) === $loc)>{{ $loc }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-medium">Date</label>
+                            <input type="date" name="date" class="form-control" value="{{ old('date', $claim->pickup->reschedule_date?->format('Y-m-d') ?? $claim->pickup->date?->format('Y-m-d')) }}" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-medium">Time</label>
+                            <input type="time" name="time" class="form-control" value="{{ old('time', $claim->pickup->reschedule_time ?? $claim->pickup->time) }}" required>
+                        </div>
+                    </div>
+                    <button class="btn btn-lf w-100">Send schedule to owner</button>
+                </form>
+            </div>
+        @endif
+
+        {{-- Owner: accept finder availability --}}
+        @if($isClaimer && $claim->status === 'approved' && $claim->pickup?->hasFinderAvailability())
+            <div class="card-lf p-4 mb-3 border-success">
+                <h5 class="fw-bold mb-2"><i class="bi bi-check2-square me-1"></i> Accept finder availability</h5>
+                <p class="small text-muted mb-3">The finder shared when they are available. Pick a safe meeting location and accept to confirm pickup.</p>
+                <form method="POST" action="{{ route('claims.accept-finder-availability', $claim) }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label fw-medium">Safe location</label>
+                        <select name="location" class="form-select" required>
+                            @foreach($safeLocations as $loc)
+                                <option value="{{ $loc }}" @selected(old('location', $claim->pickup->location) === $loc)>{{ $loc }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <button class="btn btn-lf w-100">Accept schedule</button>
+                </form>
+            </div>
+        @endif
+
+        {{-- Owner: accept finder-proposed schedule --}}
+        @if($isClaimer && $claim->status === 'approved' && $claim->pickup?->isAwaitingOwner())
+            <div class="card-lf p-4 mb-3 border-success">
+                <h5 class="fw-bold mb-2"><i class="bi bi-check2-square me-1"></i> Accept pickup schedule</h5>
+                <p class="small text-muted mb-3">The finder proposed the schedule above. Accept if you can meet at that time, or request a reschedule if needed.</p>
+                <form method="POST" action="{{ route('claims.confirm-schedule', $claim) }}" class="mb-2">
+                    @csrf
+                    <button class="btn btn-lf w-100">Accept schedule</button>
+                </form>
+            </div>
+        @endif
+
+        {{-- Finder: confirm owner-proposed schedule --}}
         @if($isFinder && $claim->status === 'approved' && $claim->pickup?->isAwaitingFinder())
             <div class="card-lf p-4 mb-3 border-success">
                 <h5 class="fw-bold mb-2"><i class="bi bi-check2-square me-1"></i> Confirm pickup schedule</h5>
@@ -161,7 +228,7 @@
         @endif
 
         {{-- Reschedule (owner or finder) --}}
-        @if($claim->status === 'approved' && $claim->pickup && in_array($claim->pickup->status, ['awaiting_finder', 'confirmed']))
+        @if($claim->status === 'approved' && $claim->pickup && in_array($claim->pickup->status, ['awaiting_finder', 'awaiting_owner', 'confirmed']))
             @if($isClaimer || $isFinder)
                 <div class="card-lf p-4 mb-3">
                     <h5 class="fw-bold h6 mb-2"><i class="bi bi-arrow-repeat me-1"></i> Request reschedule</h5>
