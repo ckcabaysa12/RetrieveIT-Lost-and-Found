@@ -98,4 +98,17 @@ class Item extends Model
     {
         return $this->status === 'available' && ! $this->hasActiveClaim();
     }
+
+    public function canBeEditedByOwner(): bool
+    {
+        if (! in_array($this->status, ['available', 'pending_claim'], true)) {
+            return false;
+        }
+
+        if ($this->relationLoaded('claims')) {
+            return ! $this->claims->contains(fn (Claim $claim) => $claim->status === 'approved');
+        }
+
+        return ! $this->claims()->where('status', 'approved')->exists();
+    }
 }

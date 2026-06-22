@@ -76,11 +76,18 @@
                             Wait for an owner to submit a claim.
                         @endif
                     </p>
-                    @if($item->type === 'found')
-                        <a href="{{ route('claims.received', ['item' => $item->id]) }}" class="btn btn-lf-outline btn-sm mt-3">
-                            <i class="bi bi-shield-check me-1"></i> Review claims for this item
-                        </a>
-                    @endif
+                    <div class="d-flex flex-wrap gap-2 mt-3">
+                        @if($canEdit)
+                            <a href="{{ route('items.edit', $item) }}" class="btn btn-lf btn-sm">
+                                <i class="bi bi-pencil me-1"></i> Edit listing
+                            </a>
+                        @endif
+                        @if($item->type === 'found')
+                            <a href="{{ route('claims.received', ['item' => $item->id]) }}" class="btn btn-lf-outline btn-sm">
+                                <i class="bi bi-shield-check me-1"></i> Review claims
+                            </a>
+                        @endif
+                    </div>
                 </div>
             @elseif(!auth()->user()->isVerified())
                 <div class="card-lf p-4 text-center">

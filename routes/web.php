@@ -36,6 +36,8 @@ Route::middleware('auth')->group(function () {
         Route::get('items/mine', [ItemController::class, 'myItems'])->name('items.mine');
         Route::get('items/create', [ItemController::class, 'create'])->name('items.create');
         Route::post('items', [ItemController::class, 'store'])->name('items.store');
+        Route::get('items/{item}/edit', [ItemController::class, 'edit'])->name('items.edit');
+        Route::put('items/{item}', [ItemController::class, 'update'])->name('items.update');
 
         Route::get('claims', [ClaimController::class, 'index'])->name('claims.index');
         Route::get('claims/received', [ClaimController::class, 'received'])->name('claims.received');
