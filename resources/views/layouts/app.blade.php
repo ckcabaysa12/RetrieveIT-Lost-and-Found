@@ -46,6 +46,44 @@
         .btn-lf:hover { background: var(--lf-teal-dark); color: #fff; transform: translateY(-1px); }
         .btn-lf-outline { border: 2px solid var(--lf-teal); color: var(--lf-teal); font-weight: 600; border-radius: 12px; background: transparent; }
         .btn-lf-outline:hover { background: var(--lf-teal); color: #fff; }
+        .btn-lf.btn-sm, .btn-lf-outline.btn-sm, .btn-lf-danger-outline.btn-sm {
+            padding: .35rem .85rem;
+            font-size: .875rem;
+            line-height: 1.5;
+        }
+        .btn-lf-danger-outline {
+            border: 2px solid #dc3545;
+            color: #dc3545;
+            font-weight: 600;
+            border-radius: 12px;
+            background: transparent;
+        }
+        .btn-lf-danger-outline:hover {
+            background: #dc3545;
+            color: #fff;
+            border-color: #dc3545;
+        }
+        .owner-listing-actions {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: .5rem;
+        }
+        .owner-listing-actions .remove-item-form {
+            display: inline-flex;
+            margin: 0;
+        }
+        .my-items-actions {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: flex-end;
+            gap: .35rem;
+        }
+        .my-items-actions .remove-item-form {
+            display: inline-flex;
+            margin: 0;
+        }
         .btn-amber { background: var(--lf-amber); border: none; color: #1f2933; font-weight: 600; border-radius: 12px; }
         .btn-amber:hover { background: #d4952f; color: #1f2933; }
 

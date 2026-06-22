@@ -76,7 +76,7 @@
                             Wait for an owner to submit a claim.
                         @endif
                     </p>
-                    <div class="d-flex flex-wrap gap-2 mt-3">
+                    <div class="owner-listing-actions mt-3">
                         @if($canEdit)
                             <a href="{{ route('items.edit', $item) }}" class="btn btn-lf btn-sm">
                                 <i class="bi bi-pencil me-1"></i> Edit listing

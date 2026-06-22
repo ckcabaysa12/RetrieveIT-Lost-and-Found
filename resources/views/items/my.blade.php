@@ -25,12 +25,14 @@
                         <td><span class="{{ $item->type === 'found' ? 'badge-found' : 'badge-lost' }}">{{ $item->type }}</span></td>
                         <td><span class="badge-status bg-light text-muted">{{ str_replace('_', ' ', $item->status) }}</span></td>
                         <td class="small text-muted">{{ $item->date_reported->format('M d, Y') }}</td>
-                        <td class="text-end text-nowrap">
-                            <a href="{{ route('items.show', $item) }}" class="btn btn-lf-outline btn-sm">View</a>
-                            @if($item->canBeEditedByOwner())
-                                <a href="{{ route('items.edit', $item) }}" class="btn btn-lf-outline btn-sm">Edit</a>
-                                @include('partials.remove-item-form', ['item' => $item])
-                            @endif
+                        <td class="text-end">
+                            <div class="my-items-actions">
+                                <a href="{{ route('items.show', $item) }}" class="btn btn-lf-outline btn-sm">View</a>
+                                @if($item->canBeEditedByOwner())
+                                    <a href="{{ route('items.edit', $item) }}" class="btn btn-lf-outline btn-sm">Edit</a>
+                                    @include('partials.remove-item-form', ['item' => $item])
+                                @endif
+                            </div>
                         </td>
                     </tr>
                 @empty

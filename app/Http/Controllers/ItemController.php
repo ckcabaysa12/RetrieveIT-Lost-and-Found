@@ -156,17 +156,16 @@ class ItemController extends Controller
     {
         $this->assertOwnerCanEdit($item);
 
-        $item->load('images');
-
-        foreach ($item->images as $image) {
-            Storage::disk('public')->delete($image->path);
-        }
-
+        $paths = $item->images()->pluck('path')->all();
         if ($item->image) {
-            Storage::disk('public')->delete($item->image);
+            $paths[] = $item->image;
         }
 
         $item->delete();
+
+        foreach (array_unique($paths) as $path) {
+            Storage::disk('public')->delete($path);
+        }
 
         return redirect()->route('items.mine')
             ->with('success', 'Listing removed successfully.');
