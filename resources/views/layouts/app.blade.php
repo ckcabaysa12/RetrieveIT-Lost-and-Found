@@ -91,6 +91,8 @@
         .item-card .photo-count-badge { position: absolute; bottom: .5rem; right: .5rem; background: rgba(0,0,0,.65); color: #fff; font-size: .75rem; padding: .2rem .5rem; border-radius: 999px; }
         .item-card .placeholder-img { height: 100%; display: flex; align-items: center; justify-content: center; color: var(--lf-teal); font-size: 2.5rem; opacity: .4; }
         .gallery-thumb.active img { outline: 2px solid var(--lf-teal); outline-offset: 2px; }
+        .gallery-photo-modal .modal-content { border: none; box-shadow: var(--lf-shadow); }
+        .gallery-photo-modal .gallery-modal-img { max-height: 80vh; width: auto; max-width: 100%; object-fit: contain; }
 
         .admin-nav-pill { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem 1rem; border-radius: 12px; background: var(--lf-card); border: 1px solid rgba(45,106,106,.12); color: var(--lf-teal); text-decoration: none; font-weight: 600; font-size: .875rem; transition: all .2s; }
         .admin-nav-pill:hover { background: var(--lf-teal); color: #fff; border-color: var(--lf-teal); }

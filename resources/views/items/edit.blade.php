@@ -51,14 +51,34 @@
                             value="{{ old('date_reported', $item->date_reported->format('Y-m-d')) }}" required>
                     </div>
                     @if($item->images->isNotEmpty())
+                        @php $missingPhotos = $item->images->filter(fn ($img) => ! $img->url())->count(); @endphp
+                        @if($missingPhotos > 0)
+                            <div class="col-12">
+                                <div class="alert alert-warning small mb-0">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>
+                                    {{ $missingPhotos }} photo{{ $missingPhotos > 1 ? 's' : '' }} could not be loaded (file missing on server).
+                                    Check <strong>Remove</strong> below and upload again.
+                                </div>
+                            </div>
+                        @endif
                         <div class="col-12">
                             <label class="form-label fw-medium">Current photos</label>
                             <div class="row g-2">
                                 @foreach($item->images as $image)
                                     <div class="col-6 col-md-3">
                                         <label class="d-block border rounded p-2 h-100">
-                                            <img src="{{ $image->url() }}" alt="" class="img-fluid rounded mb-2"
-                                                style="aspect-ratio:1;object-fit:cover;width:100%">
+                                            @if($url = $image->url())
+                                                <img src="{{ $url }}" alt="" class="img-fluid rounded mb-2"
+                                                    style="aspect-ratio:1;object-fit:cover;width:100%">
+                                            @else
+                                                <div class="d-flex align-items-center justify-content-center rounded bg-light mb-2 text-muted small text-center p-2"
+                                                    style="aspect-ratio:1;">
+                                                    <span>
+                                                        <i class="bi bi-image-alt d-block fs-4 mb-1 opacity-50"></i>
+                                                        Unavailable
+                                                    </span>
+                                                </div>
+                                            @endif
                                             <span class="form-check">
                                                 <input class="form-check-input" type="checkbox" name="remove_images[]"
                                                     value="{{ $image->id }}" @checked(in_array($image->id, old('remove_images', [])))>
