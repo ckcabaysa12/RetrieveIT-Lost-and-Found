@@ -19,5 +19,13 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Http\Exceptions\PostTooLargeException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json(['message' => 'Upload too large. Use photos under 4 MB each and upload at most 8 at a time.'], 413);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->withErrors(['images' => 'Upload too large. Use photos under 4 MB each and upload at most 8 at a time.']);
+        });
     })->create();

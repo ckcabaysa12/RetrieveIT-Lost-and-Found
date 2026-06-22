@@ -22,6 +22,7 @@ RUN sed -i 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available
     && chmod -R 775 storage bootstrap/cache
 
 COPY docker/entrypoint.sh /entrypoint.sh
+COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 80

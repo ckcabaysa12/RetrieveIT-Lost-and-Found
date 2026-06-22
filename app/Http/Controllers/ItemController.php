@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class ItemController extends Controller
@@ -76,8 +77,10 @@ class ItemController extends Controller
             'location' => ['required', 'string', 'max:255'],
             'date_reported' => ['required', 'date'],
             'images' => ['nullable', 'array', 'max:8'],
-            'images.*' => ['image', 'max:4096'],
+            'images.*' => ['file', 'image', 'max:4096'],
         ]);
+
+        $this->assertValidUploads($request, 'images');
 
         $data['user_id'] = auth()->id();
         $data['status'] = 'available';
@@ -115,8 +118,10 @@ class ItemController extends Controller
             'remove_images' => ['nullable', 'array'],
             'remove_images.*' => ['integer', 'exists:item_images,id'],
             'images' => ['nullable', 'array'],
-            'images.*' => ['image', 'max:4096'],
+            'images.*' => ['file', 'image', 'max:4096'],
         ]);
+
+        $this->assertValidUploads($request, 'images');
 
         $removeIds = collect($data['remove_images'] ?? [])
             ->map(fn ($id) => (int) $id)
@@ -206,6 +211,12 @@ class ItemController extends Controller
     private function attachUploadedImages(Item $item, array $files, int $startOrder = 0): void
     {
         foreach ($files as $index => $file) {
+            if (! $file instanceof UploadedFile || ! $file->isValid()) {
+                throw ValidationException::withMessages([
+                    "images.{$index}" => $this->uploadErrorMessage($file instanceof UploadedFile ? $file : null),
+                ]);
+            }
+
             $path = $file->store('items', 'public');
             $item->images()->create([
                 'path' => $path,
@@ -214,6 +225,33 @@ class ItemController extends Controller
         }
 
         $this->syncCoverImage($item);
+    }
+
+    private function assertValidUploads(Request $request, string $key = 'images'): void
+    {
+        $errors = [];
+
+        foreach ($request->file($key, []) ?: [] as $index => $file) {
+            if ($file instanceof UploadedFile && ! $file->isValid()) {
+                $errors["{$key}.{$index}"] = $this->uploadErrorMessage($file);
+            }
+        }
+
+        if ($errors !== []) {
+            throw ValidationException::withMessages($errors);
+        }
+    }
+
+    private function uploadErrorMessage(?UploadedFile $file): string
+    {
+        $code = $file?->getError() ?? UPLOAD_ERR_NO_FILE;
+
+        return match ($code) {
+            UPLOAD_ERR_INI_SIZE, UPLOAD_ERR_FORM_SIZE => 'This photo is too large. Use images under 4 MB each, or upload fewer photos at once.',
+            UPLOAD_ERR_PARTIAL => 'The photo upload was interrupted. Please try again.',
+            UPLOAD_ERR_NO_FILE => 'No photo was received. Try JPG or PNG images under 4 MB.',
+            default => 'This photo could not be uploaded. Use JPG or PNG under 4 MB (iPhone HEIC may not work — try saving as JPEG first).',
+        };
     }
 
     private function syncCoverImage(Item $item): void

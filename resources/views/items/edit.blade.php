@@ -92,8 +92,8 @@
                     @endif
                     <div class="col-12">
                         <label class="form-label fw-medium">Add photos <span class="text-muted fw-normal">(up to 8 total)</span></label>
-                        <input type="file" name="images[]" class="form-control" accept="image/*" multiple>
-                        <div class="form-text">Add more angles or details. Check photos above to remove any you no longer need.</div>
+                        <input type="file" name="images[]" class="form-control" accept="image/jpeg,image/png,image/gif,image/webp" multiple>
+                        <div class="form-text">Up to 8 photos total, 4 MB each. JPG or PNG works best (save iPhone photos as JPEG if upload fails).</div>
                         @if($errors->has('images') || $errors->has('images.*'))
                             <div class="text-danger small mt-1">
                                 @foreach(array_merge($errors->get('images'), $errors->get('images.*')) as $message)
