@@ -26,9 +26,9 @@
                     </span>
                 </p>
             @endif
-            @if($user->id_image)
+            @if($url = $user->idImageUrl())
                 <p class="section-label mt-3">Valid ID on file</p>
-                <img src="{{ asset('storage/'.$user->id_image) }}" class="img-fluid rounded-3 border" alt="Valid ID" style="max-height:180px">
+                <img src="{{ $url }}" class="img-fluid rounded-3 border" alt="Valid ID" style="max-height:180px">
             @endif
             <button type="button" class="btn btn-lf mt-4" id="toggle-profile-edit">
                 <i class="bi bi-pencil me-1"></i> Edit profile

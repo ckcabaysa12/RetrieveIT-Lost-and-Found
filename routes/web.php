@@ -18,6 +18,10 @@ Route::get('/', HomeController::class)->name('home');
 
 Route::get('items/browse', [ItemController::class, 'index'])->name('items.index');
 
+Route::get('/media/{path}', [\App\Http\Controllers\MediaController::class, 'show'])
+    ->where('path', '.*')
+    ->name('media.show');
+
 require __DIR__.'/auth.php';
 
 Route::middleware('auth')->group(function () {

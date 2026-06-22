@@ -63,4 +63,9 @@ class Item extends Model
     {
         return $this->status === 'available' && ! $this->hasActiveClaim();
     }
+
+    public function imageUrl(): ?string
+    {
+        return \App\Support\MediaUrl::for($this->image);
+    }
 }

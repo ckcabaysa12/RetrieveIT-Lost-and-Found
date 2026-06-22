@@ -28,10 +28,10 @@
                 <br><small class="text-muted">{{ $user->email }}</small>
             </div>
             <div class="col-md-4 text-center">
-                @if($user->id_image)
-                    <img src="{{ asset('storage/'.$user->id_image) }}" alt="ID" class="rounded-3 border" style="max-height:90px">
+                @if($url = $user->idImageUrl())
+                    <img src="{{ $url }}" alt="ID" class="rounded-3 border" style="max-height:90px">
                 @else
-                    <span class="text-muted small">No ID uploaded</span>
+                    <span class="text-muted small">{{ $user->id_image ? 'ID file missing on server' : 'No ID uploaded' }}</span>
                 @endif
             </div>
             <div class="col-md-4 text-md-end">

@@ -49,6 +49,16 @@ class User extends Authenticatable
         return $this->is_verified && $this->verification_status === 'verified';
     }
 
+    public function idImageUrl(): ?string
+    {
+        return \App\Support\MediaUrl::for($this->id_image);
+    }
+
+    public function profileImageUrl(): ?string
+    {
+        return \App\Support\MediaUrl::for($this->profile_image);
+    }
+
     public function items(): HasMany
     {
         return $this->hasMany(Item::class);

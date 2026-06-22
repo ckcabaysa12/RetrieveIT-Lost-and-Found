@@ -50,8 +50,8 @@
         <div class="col-md-6 col-lg-4">
             <div class="card-lf item-card h-100 d-flex flex-column">
                 <div class="card-img-wrap">
-                    @if($item->image)
-                        <img src="{{ asset('storage/'.$item->image) }}" alt="">
+                    @if($url = $item->imageUrl())
+                        <img src="{{ $url }}" alt="">
                     @else
                         <div class="placeholder-img"><i class="bi bi-image"></i></div>
                     @endif

@@ -25,10 +25,10 @@
                 </p>
             @endif
 
-            @if($user->id_image)
+            @if($url = $user->idImageUrl())
                 <div class="mb-4">
                     <p class="small text-muted mb-2">Submitted ID</p>
-                    <img src="{{ asset('storage/'.$user->id_image) }}" alt="Your ID" class="rounded-3 border" style="max-height:160px">
+                    <img src="{{ $url }}" alt="Your ID" class="rounded-3 border" style="max-height:160px">
                 </div>
             @endif
 

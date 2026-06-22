@@ -7,8 +7,8 @@
 <div class="row g-4">
     <div class="col-lg-8">
         <div class="card-lf mb-4">
-            @if($item->image)
-                <img src="{{ asset('storage/'.$item->image) }}" class="w-100" alt="" style="max-height:340px;object-fit:cover">
+            @if($url = $item->imageUrl())
+                <img src="{{ $url }}" class="w-100" alt="" style="max-height:340px;object-fit:cover">
             @endif
             <div class="p-4">
                 <div class="mb-2">

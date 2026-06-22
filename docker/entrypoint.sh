@@ -7,8 +7,13 @@ if [ -f artisan ]; then
         exit 1
     fi
 
+    echo "[entrypoint] Preparing upload directories..."
+    mkdir -p storage/app/public/id_cards storage/app/public/items storage/app/public/profiles
+    chown -R www-data:www-data storage bootstrap/cache
+    chmod -R 775 storage bootstrap/cache
+
     echo "[entrypoint] Linking storage..."
-    php artisan storage:link --force 2>/dev/null || true
+    php artisan storage:link --force --no-ansi
 
     echo "[entrypoint] Clearing cached config..."
     php artisan config:clear --no-ansi 2>/dev/null || true
