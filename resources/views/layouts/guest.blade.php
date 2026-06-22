@@ -45,9 +45,11 @@
                         {{ $slot }}
                     </div>
                 </div>
-                <p class="text-center small text-muted mt-3 mb-0">
-                    <a href="{{ route('home') }}" class="text-decoration-none">← Back to home</a>
-                </p>
+                @unless(request()->routeIs('home'))
+                    <p class="text-center small text-muted mt-3 mb-0">
+                        <a href="{{ route('home') }}" class="text-decoration-none">← Back to home</a>
+                    </p>
+                @endunless
             </div>
         </div>
     </div>
