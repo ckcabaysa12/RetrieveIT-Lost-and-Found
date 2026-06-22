@@ -2,7 +2,7 @@
 @section('title', 'Profile')
 
 @section('content')
-@include('partials.back-button', ['url' => route('dashboard'), 'label' => 'Back to dashboard'])
+@include('partials.back-button', ['url' => auth()->user()->isVerified() || auth()->user()->isAdmin() ? route('dashboard') : route('verification.pending'), 'label' => auth()->user()->isVerified() || auth()->user()->isAdmin() ? 'Back to dashboard' : 'Back'])
 
 <div class="page-hero mb-4">
     <h1 class="h4 mb-1">My Profile</h1>
@@ -19,7 +19,7 @@
             </h4>
             <p class="text-muted mb-1">{{ $user->email }}</p>
             <p class="text-muted small">{{ $user->phone ?? 'No contact number yet' }}</p>
-            @if(!$user->is_verified)
+            @if(!$user->isVerified())
                 <p class="mb-2">
                     <span class="badge rounded-pill bg-{{ $user->verification_status === 'rejected' ? 'danger' : 'warning' }}-subtle text-dark">
                         ID: {{ ucfirst($user->verification_status) }}
@@ -68,8 +68,16 @@
         </div>
         <div class="card-lf p-3 mt-3" id="profile-help-panel">
             <p class="small text-muted mb-0">
-                <i class="bi bi-patch-check-fill text-primary"></i>
-                The blue check appears beside your name once your valid ID is verified.
+                @if($user->isVerified())
+                    <i class="bi bi-patch-check-fill text-primary"></i>
+                    The blue check appears beside your name once your valid ID is verified.
+                @elseif($user->verification_status === 'rejected')
+                    <i class="bi bi-x-circle text-danger"></i>
+                    Your ID was rejected. Update your ID photo below and contact an admin to review again.
+                @else
+                    <i class="bi bi-hourglass-split text-warning"></i>
+                    Your ID is pending admin review. You can browse the home page, but other features unlock after approval.
+                @endif
             </p>
         </div>
     </div>

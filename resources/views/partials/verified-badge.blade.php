@@ -1,4 +1,4 @@
-@if($user->is_verified)
+@if($user->isVerified())
     <i class="bi bi-patch-check-fill text-primary verified-check" title="Verified user" aria-label="Verified user"></i>
 @elseif(!($verifiedOnly ?? false))
     @if($user->verification_status === 'pending')
