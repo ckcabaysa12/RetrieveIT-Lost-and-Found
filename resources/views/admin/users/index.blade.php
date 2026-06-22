@@ -2,14 +2,14 @@
 @section('title', 'Verify Users')
 
 @section('content')
+@include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
+
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
     <div>
         <p class="section-label mb-0">Blue check system</p>
         <h1 class="h4 fw-bold mb-0">User Verification</h1>
     </div>
-    <div class="d-flex gap-2 align-items-center">
-        @include('partials.back-button', ['url' => route('admin.dashboard'), 'label' => 'Back to admin'])
-        <form method="GET">
+    <form method="GET" class="m-0">
         <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
             <option value="pending" @selected(request('status', 'pending')==='pending')>Pending</option>
             <option value="" @selected(request()->has('status') && request('status')==='')>All statuses</option>
@@ -17,7 +17,6 @@
             <option value="rejected" @selected(request('status')==='rejected')>Rejected</option>
         </select>
     </form>
-    </div>
 </div>
 
 @foreach($users as $user)
